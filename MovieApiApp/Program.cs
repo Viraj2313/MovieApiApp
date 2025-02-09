@@ -78,7 +78,7 @@ builder.Services.AddCors(options =>
                 "https://localhost:7242",
                 "http://localhost:5006",
                 "http://localhost:7242",
-                "https://lemon-flower-02925551e.4.azurestaticapps.net/")
+                "https://white-bush-0f005461e.4.azurestaticapps.net/")
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();

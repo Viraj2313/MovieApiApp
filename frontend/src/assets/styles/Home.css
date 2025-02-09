@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.movieList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); 
+    gap: 20px; 
+    padding: 20px;
+  }
+  
+  li {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: flex-start;
+  }
+  
+  img {
+    width: 100%; 
+    height: auto;
+  }
+  
+  h3 {
+    word-wrap: break-word;
+  }
+  

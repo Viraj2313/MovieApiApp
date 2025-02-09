@@ -39,12 +39,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-Console.WriteLine("Environment Variable (MYSQLCONNSTR_DefaultConnection):");
-Console.WriteLine(Environment.GetEnvironmentVariable("MYSQLCONNSTR_DefaultConnection"));
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
 
-// Database connection string based on environment
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
+var apiKey = builder.Configuration["ApiKeyOmDb"];
+var jwtKey = builder.Configuration["Jwt:Key"];
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
 
 
 

@@ -78,7 +78,7 @@ builder.Services.AddCors(options =>
                 "https://localhost:7242",
                 "http://localhost:5006",
                 "http://localhost:7242",
-                "https://white-bush-0f005461e.4.azurestaticapps.net/")
+                "https://white-bush-0f005461e.4.azurestaticapps.net")
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();
@@ -105,7 +105,7 @@ if (app.Environment.IsDevelopment())
 
 // Use CORS and session middleware
 app.UseCors("AllowSpecificOrigin");
-app.UseSession();  // Session must come before authentication
+app.UseSession();  
 app.UseAuthentication();
 app.UseAuthorization();
 

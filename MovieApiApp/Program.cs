@@ -39,8 +39,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+Console.WriteLine("Environment Variable (MYSQLCONNSTR_DefaultConnection):");
+Console.WriteLine(Environment.GetEnvironmentVariable("MYSQLCONNSTR_DefaultConnection"));
+
 // Database connection string based on environment
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+
+
 
 if (string.IsNullOrEmpty(connectionString))
 {

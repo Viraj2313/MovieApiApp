@@ -3,6 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+Properties/launchSettings.json
 
 appsettings.json
 appsettings.Development.json
@@ -367,3 +368,4 @@ FodyWeavers.xsd
 /MovieApiApp/appsettings.json
 /MovieApiApp/appsettings.json
 /MovieApiApp/appsettings.Development.json
+/MovieApiApp/Properties/launchSettings.json

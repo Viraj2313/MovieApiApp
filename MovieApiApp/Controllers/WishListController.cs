@@ -1,8 +1,9 @@
-﻿
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MovieApiApp.Helpers;
 using System.Diagnostics;
+using System.Security.Claims; // <-- Add this
 using WbApp.Data;
 using WbApp.Dto;
 using WbApp.Models;
@@ -19,67 +20,70 @@ namespace WbApp.Controllers
         {
             _context = context;
         }
+
         [HttpPost("add_wishlist")]
-        public async Task<IActionResult> AddToWishlist([FromBody] WishList wishlist)
+        public async Task<IActionResult> AddToWishlist([FromBody] WishList wishlistDto)
         {
-
-            var userIdStr = HttpContext.Session.GetString("User Id");
-            if (userIdStr == null)
+            int userId = HttpContext.GetUserIdFromToken() ?? 0;
+            if (userId == 0)
             {
-                Debug.WriteLine("Session is null or 'User Id' is not set.");
+                return Unauthorized(new { messge = "User Not found" });
             }
-            if (string.IsNullOrEmpty(userIdStr))
+            var wishlist = new WishList
             {
-                Debug.WriteLine("User Id not set in session.");
-            }
-            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
-            {
-                return Unauthorized("User not logged in or invalid UserId.");
-            }
-
-            if (string.IsNullOrEmpty(wishlist.MovieId))
-            {
-                return BadRequest("MovieId cannot be null or empty.");
-            }
+                UserId = userId,
+                MovieId = wishlistDto.MovieId,
+                MovieTitle = wishlistDto.MovieTitle,
+                MoviePoster = wishlistDto.MoviePoster
+            };
 
             _context.Wishlists.Add(wishlist);
             await _context.SaveChangesAsync();
-            return Ok(new { message = "movie added to wishlist" });
+
+            return Ok(new { message = "Movie added to wishlist" });
         }
 
         [HttpDelete("remove")]
         public async Task<IActionResult> RemoveFromWishlist([FromBody] MovieDel movieDel)
         {
-            var userIdStr = HttpContext.Session.GetString("User Id");
-            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
+            if (movieDel == null || string.IsNullOrEmpty(movieDel.MovieId))
             {
-                return Unauthorized();
+                return BadRequest("Invalid payload or MovieId is null/empty.");
             }
-            if (movieDel.MovieId == null)
+
+            Console.WriteLine($"Incoming MovieId: {movieDel.MovieId}"); // Debug log
+            var userId = HttpContext.GetUserIdFromToken();
+            if (userId == 0)
             {
-                return BadRequest("MovieId cannot be null or empty.");
+                return Unauthorized( new {messge="User Not found"});
             }
-            var wishlistItem = await _context.Wishlists.FirstOrDefaultAsync(w=>w.MovieId == movieDel.MovieId && w.UserId == userId);
+            var wishlistItem = await _context.Wishlists
+                .FirstOrDefaultAsync(w => w.MovieId == movieDel.MovieId && w.UserId == userId);
 
             if (wishlistItem == null)
             {
                 return NotFound("Movie not found in wishlist.");
             }
+
             _context.Wishlists.Remove(wishlistItem);
             await _context.SaveChangesAsync();
-            return Ok(new { message = "movie removed from wishlist" });
+            return Ok(new { message = "Movie removed from wishlist" });
         }
+
 
 
         [HttpGet("wishlist")]
         public async Task<IActionResult> GetWishList()
-        {
-            var userIdStr = HttpContext.Session.GetString("User Id");
-            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
-            {
-                return Unauthorized();
 
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("User not logged in.");
             }
+            int userId = int.Parse(userIdClaim.Value);
+
+
             var wishlist = await _context.Wishlists.Where(w => w.UserId == userId).ToListAsync();
             return Ok(wishlist);
         }

@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { API_URL } from "../config";
-
+import Loader from "./Loader";
 const AboutMovie = ({ selectedMovie }) => {
   const [movieDetails, setMovieDetails] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -20,25 +20,26 @@ const AboutMovie = ({ selectedMovie }) => {
       );
       setMovieDetails(response.data);
     } catch (error) {
-      console.error("error", error);
+      console.error("Error fetching movie details:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) {
-    return <>Loading...</>;
-  }
-  if (!movieDetails) {
-    return <div>no movie details</div>;
-  }
-
   return (
     <div>
-      <h1>About Movie</h1>
-      <h2>{movieDetails.Title}</h2>
-      <h3>{movieDetails.Plot}</h3>
-      <img src={movieDetails.Poster} alt={movieDetails.Title} />
+      {loading ? (
+        <Loader />
+      ) : movieDetails ? (
+        <div>
+          <h1>About Movie</h1>
+          <h2>{movieDetails.Title}</h2>
+          <h3>{movieDetails.Plot}</h3>
+          <img src={movieDetails.Poster} alt={movieDetails.Title} />
+        </div>
+      ) : (
+        <div>No movie selected or no details available.</div>
+      )}
     </div>
   );
 };

@@ -31,6 +31,7 @@ namespace WbApp.Controllers
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
         public ClaimsPrincipal? ValidateJwtToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

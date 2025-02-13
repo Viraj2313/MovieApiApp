@@ -74,7 +74,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigin", builder =>
     {
         builder.WithOrigins(
-                "http://localhost:5173",
+                "http://localhost:5174",
                 "https://localhost:7242",
                 "http://localhost:5006",
                 "http://localhost:7242",

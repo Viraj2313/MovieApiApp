@@ -8,6 +8,7 @@ using WbApp.Dto;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 namespace WbApp.Controllers
 {
     [Route("api")]
@@ -23,6 +24,8 @@ namespace WbApp.Controllers
             _context = context;
             _httpClient = client;
         }
+      
+
 
         //for sign up/register
         [HttpPost("register")]
@@ -37,16 +40,18 @@ namespace WbApp.Controllers
              {
                  HttpOnly = true,
                  Secure = true,
-                 SameSite = SameSiteMode.Strict,
+                 SameSite = SameSiteMode.None,
                  Expires = DateTime.UtcNow.AddHours(2)
              });
             return Ok(new { message = "User registered successfully" , userId=user.Id});
         }
+      
+
 
         [HttpGet("check-session")]
         public IActionResult CheckSession()
         {
-            var token = Request.Cookies["Jwt"];
+            var token = Request.Cookies["jwt"];
 
             if (string.IsNullOrEmpty(token))
             {
@@ -83,20 +88,33 @@ namespace WbApp.Controllers
             var token =_tokenService.GenerateToken(existingUser);
             Response.Cookies.Append("jwt", token, new CookieOptions
             {
-                HttpOnly = true,  // Prevents client-side JavaScript access (XSS protection)
-                Secure = true,     // Ensures the cookie is sent over HTTPS
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddHours(2) // Token expiry
+                HttpOnly = true,  
+                Secure = true,     
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddHours(2) 
             });
             return Ok(new { message = "login success",userId = existingUser.Id, userName= existingUser.Name });
         }
         [HttpPost("logout")]
-        public IActionResult logout()
+        public IActionResult Logout()
         {
-            //HttpContext.Session.Clear();
-            Response.Cookies.Delete("jwt");
-            return Ok( new { message = "Logged out successfully" } );
+            if (Request.Cookies["jwt"] != null)
+            {
+                Response.Cookies.Append("jwt", "", new CookieOptions
+                {
+                    Expires = DateTime.UtcNow.AddDays(-1), // Set expiration to past date to delete
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None
+                });
+
+                return Ok(new { message = "Cookie deleted" });
+            }
+
+            // If the cookie does not exist
+            return Ok(new { message = "Not logged out, no cookie found" });
         }
+
         [Authorize]
         [HttpGet("user")]
         public async Task<IActionResult> GetUser()
@@ -124,6 +142,29 @@ namespace WbApp.Controllers
             }
 
             return Ok(new { userName = user.Name });
+        }
+        [HttpGet("get-user-id")]
+        public IActionResult GetUserId()
+        {
+            var token = Request.Cookies["jwt"];
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized(new { Message = "Token not found in cookies." });
+            }
+            var principal = _tokenService.ValidateJwtToken(token);
+            if (principal == null)
+            {
+                return Unauthorized(new { Message = "Invalid token." });
+            }
+
+            var userIdClaim = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return BadRequest(new { Message = "User ID not found in token." });
+            }
+
+            return Ok(new { UserId = userIdClaim.Value });
         }
     }
 }

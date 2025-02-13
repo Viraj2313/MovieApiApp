@@ -51,22 +51,26 @@ function App() {
       handleLogout();
     }
   };
-  const handleLogout = async (e) => {
+  const handleLogout = async () => {
     try {
-      const response = await axios.post(`${API_URL}/api/logout`, {
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        `${API_URL}/api/logout`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
       console.log(response.data.message);
 
       setUserName(null);
       navigate("/");
     } catch (error) {
-      console.log("logout failed", error.response?.data || error.message);
+      console.log("Logout failed", error.response?.data || error.message);
     }
   };
   return (
     <>
-      <NavBar user={user} handleLogout={handleLogout} />
+      <NavBar user={user} setUserName={setUserName} />
       <Routes>
         <Route path="/wishlist" element={<WishList />}></Route>
         <Route

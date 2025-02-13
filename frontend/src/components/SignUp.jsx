@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../assets/styles/SignUp.css";
 import { API_URL } from "../config";
-
+import { Link } from "react-router-dom";
 const SignUp = ({ setUserName }) => {
   const [user, setUserState] = useState({
     name: "",
@@ -67,7 +67,7 @@ const SignUp = ({ setUserName }) => {
       </form>
       <div className="form-section">
         <p>
-          Have an account? <a href="/login">Log in</a>
+          Have an account? <Link to="/login">Log in</Link>
         </p>
       </div>
     </div>

@@ -4,11 +4,11 @@ import "../assets/styles/Home.css";
 import { Navigate, useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 import Loader from "./Loader";
-const Home = ({ setSelectedMovie }) => {
+import { triggerNotification } from "../utils/NotificationUtil";
+const Home = ({ setSelectedMovie, userId, setUserId }) => {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [userId, setuserId] = useState(null);
 
   const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ const Home = ({ setSelectedMovie }) => {
       });
       if (response.status === 200) {
         console.log(response.data.userId);
-        setuserId(response.data.userId);
+        setUserId(response.data.userId);
       }
     } catch (error) {
       console.log(error);
@@ -44,9 +44,8 @@ const Home = ({ setSelectedMovie }) => {
 
   const handleSave = async (movie) => {
     try {
-      console.log(userId);
       if (!userId) {
-        alert("login first");
+        triggerNotification("You need to login first", "error");
         return;
       }
 
@@ -63,7 +62,7 @@ const Home = ({ setSelectedMovie }) => {
         { withCredentials: true }
       );
       if (response.status == 200) {
-        alert("Movie added to Wishlist");
+        triggerNotification("Movie added to wishlist", "success");
       }
     } catch (error) {
       console.log(error);
@@ -76,6 +75,17 @@ const Home = ({ setSelectedMovie }) => {
     console.log(`Clicked on movie with ID: ${movie.imdbID}`);
   };
 
+  // <ul className="movieList">
+  //   {movies.map((movie) => (
+  //     <li key={movie.imdbID} className="movie">
+  //       <img src={movie.Poster} alt="" onClick={() => handleClick(movie)} />
+  //       <h3>
+  //         {movie.Title} <button onClick={() => handleSave(movie)}>Save</button>
+  //       </h3>
+  //     </li>
+  //   ))}
+  // </ul>;
+
   return (
     <>
       {loading ? (
@@ -83,7 +93,7 @@ const Home = ({ setSelectedMovie }) => {
       ) : (
         <ul className="movieList">
           {movies.map((movie) => (
-            <li key={movie.imdbID}>
+            <li key={movie.imdbID} className="movie">
               <img
                 src={movie.Poster}
                 alt=""

@@ -51,7 +51,6 @@ namespace WbApp.Controllers
                 return BadRequest("Invalid payload or MovieId is null/empty.");
             }
 
-            Console.WriteLine($"Incoming MovieId: {movieDel.MovieId}"); // Debug log
             var userId = HttpContext.GetUserIdFromToken();
             if (userId == 0)
             {

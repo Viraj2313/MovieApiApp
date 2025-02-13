@@ -3,11 +3,13 @@ import axios from "axios";
 import "../assets/styles/Home.css";
 import { API_URL } from "../config";
 import Loader from "./Loader";
+import { triggerNotification } from "../utils/NotificationUtil";
 
 const WishList = () => {
   const [wishlist, setWishlist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const getWishlist = async () => {
     try {
       const response = await axios.get(`${API_URL}/api/wishlist`, {
@@ -37,11 +39,11 @@ const WishList = () => {
       });
 
       if (response.status === 200) {
-        alert("Movie removed from wishlist");
+        triggerNotification("Movie removed from wishlist", "success");
         getWishlist();
       }
     } catch (error) {
-      alert("Unable to remove the movie from wishlist");
+      triggerNotification(`Unable to remove movie from wishlist`, "error");
       console.log(error);
     }
   };

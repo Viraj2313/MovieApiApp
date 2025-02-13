@@ -3,6 +3,7 @@ import axios from "axios";
 import "../assets/styles/SignUp.css";
 import { API_URL } from "../config";
 import { Link } from "react-router-dom";
+import { triggerNotification } from "../utils/NotificationUtil";
 const SignUp = ({ setUserName }) => {
   const [user, setUserState] = useState({
     name: "",
@@ -19,7 +20,7 @@ const SignUp = ({ setUserName }) => {
 
       if (response.status === 200) {
         setUserName(user.name);
-
+        triggerNotification("Signed Up Successfully", "success");
         setUserState({
           name: "",
           email: "",

@@ -9,10 +9,13 @@ import Login from "./components/Login";
 import WishList from "./components/WishList";
 import axios from "axios";
 import { API_URL } from "./config";
+import { triggerNotification } from "./utils/NotificationUtil";
 function App() {
   const navigate = useNavigate();
   const [user, setUserName] = useState(null);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [userId, setUserId] = useState(null);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -60,22 +63,34 @@ function App() {
           withCredentials: true,
         }
       );
-      console.log(response.data.message);
-
+      triggerNotification("Logout success", "error");
+      setUserId(null);
       setUserName(null);
       navigate("/");
     } catch (error) {
+      triggerNotification("Logout failed, please try again", "error");
       console.log("Logout failed", error.response?.data || error.message);
     }
   };
   return (
     <>
-      <NavBar user={user} setUserName={setUserName} />
+      <NavBar
+        user={user}
+        setUserName={setUserName}
+        setUserId={setUserId}
+        handleLogout={handleLogout}
+      />
       <Routes>
         <Route path="/wishlist" element={<WishList />}></Route>
         <Route
           path="/"
-          element={<Home setSelectedMovie={setSelectedMovie} />}
+          element={
+            <Home
+              setSelectedMovie={setSelectedMovie}
+              setUserId={setUserId}
+              userId={userId}
+            />
+          }
         />
         <Route path="/signup" element={<SignUp setUserName={setUserName} />} />
         <Route

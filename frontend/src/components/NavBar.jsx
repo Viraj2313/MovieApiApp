@@ -2,7 +2,7 @@ import React from "react";
 import "../assets/styles/NavBar.css";
 import { Link } from "react-router-dom";
 import Logout from "./Logout";
-const NavBar = ({ user, setUserName }) => {
+const NavBar = ({ user, setUserName, setUserId, handleLogout }) => {
   return (
     <nav>
       <div className="tabs">
@@ -18,7 +18,7 @@ const NavBar = ({ user, setUserName }) => {
         {user ? (
           <>
             <strong className="wlc">Welcome, {user}!</strong>
-            <Logout setUserName={setUserName}></Logout>
+            <Logout handleLogout={handleLogout}></Logout>
           </>
         ) : (
           <>

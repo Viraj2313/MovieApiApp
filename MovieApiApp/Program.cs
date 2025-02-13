@@ -75,9 +75,6 @@ builder.Services.AddCors(options =>
     {
         builder.WithOrigins(
                 "http://localhost:5174",
-                "https://localhost:7242",
-                "http://localhost:5006",
-                "http://localhost:7242",
                 "https://white-bush-0f005461e.4.azurestaticapps.net")
                .AllowAnyMethod()
                .AllowAnyHeader()

@@ -39,6 +39,7 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
       .catch((error) => {
         console.log(error);
         setLoading(false);
+        setError("Unable to fetch movies from server");
       });
   }, []);
 
@@ -75,37 +76,29 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
     console.log(`Clicked on movie with ID: ${movie.imdbID}`);
   };
 
-  // <ul className="movieList">
-  //   {movies.map((movie) => (
-  //     <li key={movie.imdbID} className="movie">
-  //       <img src={movie.Poster} alt="" onClick={() => handleClick(movie)} />
-  //       <h3>
-  //         {movie.Title} <button onClick={() => handleSave(movie)}>Save</button>
-  //       </h3>
-  //     </li>
-  //   ))}
-  // </ul>;
-
   return (
     <>
       {loading ? (
         <Loader />
       ) : (
-        <ul className="movieList">
-          {movies.map((movie) => (
-            <li key={movie.imdbID} className="movie">
-              <img
-                src={movie.Poster}
-                alt=""
-                onClick={() => handleClick(movie)}
-              />
-              <h3>
-                {movie.Title}{" "}
-                <button onClick={() => handleSave(movie)}>Save</button>
-              </h3>
-            </li>
-          ))}
-        </ul>
+        <>
+          {error && <div className="error-message">{error}</div>}
+          <ul className="movieList">
+            {movies.map((movie) => (
+              <li key={movie.imdbID} className="movie">
+                <img
+                  src={movie.Poster}
+                  alt=""
+                  onClick={() => handleClick(movie)}
+                />
+                <h3>
+                  {movie.Title}{" "}
+                  <button onClick={() => handleSave(movie)}>Save</button>
+                </h3>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </>
   );

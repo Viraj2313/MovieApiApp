@@ -1,9 +1,11 @@
 nav {
+
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #333;
   padding: 16px 10px;
+  width: auto;
   gap: 7px;
   /* height: 40px; */
   height: 60px;
@@ -57,11 +59,11 @@ button:hover {
 body{
   margin: 0px;
 }
-.nav-btns{
+/* .nav-btns{
   display: flex;
   flex-grow: 0;
   gap: 8px;
-}
+} */
 
 @media (max-width: 480px) {
   nav {

@@ -10,6 +10,7 @@ import WishList from "./components/WishList";
 import axios from "axios";
 import { API_URL } from "./config";
 import { triggerNotification } from "./utils/NotificationUtil";
+import Friends from "./components/Friends";
 function App() {
   const navigate = useNavigate();
   const [user, setUserName] = useState(null);
@@ -79,6 +80,7 @@ function App() {
         setUserName={setUserName}
         setUserId={setUserId}
         handleLogout={handleLogout}
+        userId={userId}
       />
       <Routes>
         <Route path="/wishlist" element={<WishList />}></Route>
@@ -98,6 +100,7 @@ function App() {
           element={<AboutMovie selectedMovie={selectedMovie} />}
         />
         <Route path="/login" element={<Login setUserName={setUserName} />} />
+        <Route path="/friends" element={<Friends user={user} />} />
       </Routes>
     </>
   );

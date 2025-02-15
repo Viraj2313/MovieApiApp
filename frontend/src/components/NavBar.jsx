@@ -12,6 +12,9 @@ const NavBar = ({ user, setUserName, setUserId, handleLogout }) => {
         <Link to={"/wishlist"}>
           <h2>Watch List</h2>
         </Link>
+        <Link to={"/friends"}>
+          <h2>Friends</h2>
+        </Link>
       </div>
 
       <div className="nav-btns">

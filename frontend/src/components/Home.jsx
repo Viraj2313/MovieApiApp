@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../assets/styles/Home.css";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 import Loader from "./Loader";
 import { triggerNotification } from "../utils/NotificationUtil";
@@ -9,7 +9,7 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [movieSearch, setSearchMovie] = useState("");
   const navigate = useNavigate();
 
   const getUserIdFromToken = async () => {
@@ -39,6 +39,7 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
       .catch((error) => {
         console.log(error);
         setLoading(false);
+        setError("Unable to fetch movies from server");
       });
   }, []);
 
@@ -74,38 +75,54 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
     navigate(`/about/${movie.Title}`);
     console.log(`Clicked on movie with ID: ${movie.imdbID}`);
   };
-
-  // <ul className="movieList">
-  //   {movies.map((movie) => (
-  //     <li key={movie.imdbID} className="movie">
-  //       <img src={movie.Poster} alt="" onClick={() => handleClick(movie)} />
-  //       <h3>
-  //         {movie.Title} <button onClick={() => handleSave(movie)}>Save</button>
-  //       </h3>
-  //     </li>
-  //   ))}
-  // </ul>;
-
+  const filteredMovies =
+    movieSearch.trim() === ""
+      ? movies
+      : movies.filter((movie) => {
+          const searchWords = movieSearch.toLowerCase().split(" ");
+          return searchWords.every((word) =>
+            movie.Title.toLowerCase().includes(word)
+          );
+        });
   return (
     <>
       {loading ? (
         <Loader />
       ) : (
-        <ul className="movieList">
-          {movies.map((movie) => (
-            <li key={movie.imdbID} className="movie">
-              <img
-                src={movie.Poster}
-                alt=""
-                onClick={() => handleClick(movie)}
-              />
-              <h3>
-                {movie.Title}{" "}
-                <button onClick={() => handleSave(movie)}>Save</button>
-              </h3>
-            </li>
-          ))}
-        </ul>
+        <>
+          {error && <div className="error-message">{error}</div>}
+          <div className="flex justify-center items-center m-3 w-xs">
+            <input
+              type="text"
+              value={movieSearch}
+              onChange={(e) => setSearchMovie(e.target.value)}
+              className="!border-b !border-blue-500 !h-10 focus:!outline-none focus:!border-blue-500 !w-100%"
+              placeholder="Enter movie to search"
+            />
+            <button className="!mx-4 !bg-blue-600 !text-white !rounded !px-4 !py-2 focus:!outline-none hover:!bg-blue-700 cursor-pointer">
+              Search
+            </button>
+          </div>
+          <ul className="movieList">
+            {filteredMovies.length > 0 ? (
+              filteredMovies.map((movie) => (
+                <li key={movie.imdbID} className="movie">
+                  <img
+                    src={movie.Poster}
+                    alt=""
+                    onClick={() => handleClick(movie)}
+                  />
+                  <h3>
+                    {movie.Title}{" "}
+                    <button onClick={() => handleSave(movie)}>Save</button>
+                  </h3>
+                </li>
+              ))
+            ) : (
+              <div className="no-movies-message">No such movie found</div>
+            )}
+          </ul>
+        </>
       )}
     </>
   );

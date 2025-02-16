@@ -9,12 +9,40 @@ const Friends = ({ user, userId }) => {
   const [friend, setFriend] = useState({});
   const [friendFound, setFriendFound] = useState(false);
   const [searching, setSearching] = useState(false);
-  user = 1;
+  const [friendRequests, setFriendRequests] = useState([]);
+
+  useEffect(() => {
+    getFriendsList();
+    getFriendRequests();
+  }, []);
+  console.log(userId);
+  const getFriendRequests = async () => {
+    try {
+      const response = await axios.get(
+        `${API_URL}/api/friends/get-friend-requests`,
+        {
+          params: {
+            userId,
+          },
+        }
+      );
+      if (response.status === 200) {
+        console.log(response.data);
+        setFriendRequests(response.data);
+      }
+    } catch (error) {
+      console.log(error.response?.data || error.message);
+    }
+  };
+
   const getFriendsList = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/friends/get_friends`, {
-        params: { userId },
-      });
+      const response = await axios.get(
+        `${API_URL}/api/friends/get-friends-list`,
+        {
+          params: { userId },
+        }
+      );
       if (response.status === 200) {
         console.log(response.data);
         setFriends(response.data);
@@ -23,10 +51,30 @@ const Friends = ({ user, userId }) => {
       console.log(error);
     }
   };
-  useEffect(() => {
-    getFriendsList();
-  }, []);
 
+  const handleAcceptReq = async (senderId) => {
+    try {
+      console.log(senderId);
+      const response = await axios.post(
+        `${API_URL}/api/friends/accept-request`,
+        null,
+        {
+          params: {
+            userId: userId,
+            senderId: senderId,
+          },
+        }
+      );
+      setFriendFound(false);
+      setFriendRequests([]);
+      setFriend({});
+      getFriendRequests();
+      getFriendsList();
+    } catch (error) {
+      console.log(error.response.data);
+      triggerNotification("Counldn't accept friend request");
+    }
+  };
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
@@ -38,6 +86,7 @@ const Friends = ({ user, userId }) => {
         params: { friendId },
       });
       if (response.status === 200) {
+        console.log(friend.id);
         triggerNotification("Friend found", "success");
         setFriendFound(true);
         setFriend(response.data);
@@ -46,30 +95,29 @@ const Friends = ({ user, userId }) => {
       triggerNotification(`${error}`, "error");
     }
   };
-  const handleAddFriend = async () => {
+  const handleSendFriendReq = async () => {
     try {
-      const payload = {
-        userId: userId,
-        friendId: friend.id,
-        friendname: friend.name,
-      };
+      console.log(userId, friend.id);
       const response = await axios.post(
-        `${API_URL}/api/friends/add_friend`,
-        payload
+        `${API_URL}/api/friends/send-request`,
+        null,
+        {
+          params: {
+            senderId: userId,
+            receiverId: friend.id,
+          },
+        }
       );
       if (response.status === 200) {
-        triggerNotification("Friend added successfully!", "success");
-
-        setFriends((prevFriends) => [...prevFriends, friend]);
-        console.log(friends);
-
+        triggerNotification("Friend request Sent!", "success");
         setFriendFound(false);
         setFriend({});
       } else {
-        triggerNotification("Failed to add friend", "error");
+        triggerNotification("Failed to send friend request", "error");
       }
     } catch (error) {
       triggerNotification("Friend request not sent", "error");
+      console.log(error.response.data);
     }
   };
   return (
@@ -89,7 +137,7 @@ const Friends = ({ user, userId }) => {
             </ul>
           </div>
           <div className="w-px bg-gray-700 mx-6"></div>
-          <div className="flex-3">
+          <div className="flex-2">
             <div className="text-4xl font-bold mb-4">
               Search friend through their ID:
             </div>
@@ -110,16 +158,16 @@ const Friends = ({ user, userId }) => {
             </form>
             <div>
               {friendFound ? (
-                <div className="flex flex-col text-xl bg-white border border-gray-300 rounded-md shadow-lg p-4 w-96">
+                <div className="flex flex-col text-xl bg-white border border-gray-300 rounded-md shadow-lg p-4 w-75">
                   <div className="mb-4">
                     <p className="font-semibold">Name: {friend.name}</p>
                     <p className="text-gray-500">ID: {friend.id}</p>
                   </div>
                   <button
-                    onClick={handleAddFriend}
+                    onClick={handleSendFriendReq}
                     className=" !bg-green-500 !text-white px-4 py-2 !rounded hover:!bg-green-600 !transition-all !self-start"
                   >
-                    Add Friend
+                    Send Request
                   </button>
                 </div>
               ) : (
@@ -128,6 +176,33 @@ const Friends = ({ user, userId }) => {
                 </p>
               )}
             </div>
+          </div>
+          <div className="w-px bg-gray-700 mx-6"></div>
+          <div className="flex-1 text-3xl font-bold">
+            Friend Requests
+            <ul className="mt-4 space-y-2">
+              {friendRequests.length > 0 ? (
+                friendRequests.map((request) => (
+                  <li
+                    key={request.senderId}
+                    className="p-2 bg-gray-100 rounded shadow-md"
+                  >
+                    <div className="flex justify-between items-center">
+                      <span>{request.senderName}</span>
+                      <span>{request.senderId}</span>{" "}
+                      <button
+                        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-all"
+                        onClick={() => handleAcceptReq(request.senderId)}
+                      >
+                        Accept
+                      </button>
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <p className="text-gray-500">No friend requests found</p>
+              )}
+            </ul>
           </div>
         </div>
       ) : (

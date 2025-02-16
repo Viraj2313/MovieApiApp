@@ -9,7 +9,7 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [movieSearch, setSearchMovie] = useState(null);
   const navigate = useNavigate();
 
   const getUserIdFromToken = async () => {
@@ -75,7 +75,12 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
     navigate(`/about/${movie.Title}`);
     console.log(`Clicked on movie with ID: ${movie.imdbID}`);
   };
-
+  const filteredMovies =
+    movieSearch.trim() === ""
+      ? movies
+      : movies.filter((movie) =>
+          movie.Title.toLowerCase().includes(movieSearch.toLowerCase())
+        );
   return (
     <>
       {loading ? (
@@ -83,8 +88,20 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
       ) : (
         <>
           {error && <div className="error-message">{error}</div>}
+          <div className="flex justify-center items-center m-3 w-xs">
+            <input
+              type="text"
+              value={movieSearch}
+              onChange={(e) => setSearchMovie(e.target.value)}
+              className="border-b border-blue-500 h-10 focus:outline-none focus:border-blue-500 w-100%"
+              placeholder="Enter movie to search"
+            />
+            <button className="mx-4 bg-blue-600 text-white rounded px-4 py-2 focus:outline-none hover:bg-blue-700 cursor-pointer">
+              Search
+            </button>
+          </div>
           <ul className="movieList">
-            {movies.map((movie) => (
+            {filteredMovies.map((movie) => (
               <li key={movie.imdbID} className="movie">
                 <img
                   src={movie.Poster}

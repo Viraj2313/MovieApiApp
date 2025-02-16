@@ -81,6 +81,8 @@ namespace WbApp.Controllers
 
 
             }
+            Console.WriteLine("Login clicked");
+            Console.WriteLine(existingUser);
             //HttpContext.Session.SetString("User Id", existingUser.Id.ToString());
             //HttpContext.Session.SetString("User Name", existingUser.Name.ToString());
             var token =_tokenService.GenerateToken(existingUser);

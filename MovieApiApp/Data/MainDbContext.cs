@@ -1,5 +1,6 @@
 ﻿using Form.Models;
 using Microsoft.EntityFrameworkCore;
+using MovieApiApp.Dto;
 using MovieApiApp.Models;
 using WbApp.Models;
 
@@ -12,6 +13,7 @@ namespace WbApp.Data
       public  DbSet<User> Users { get; set; }
         public DbSet<WishList> Wishlists { get; set; }
         public DbSet<Friend> Friends { get; set; }
+        public DbSet<FriendRequest> FriendRequests { get; set; }
 
     }
 }

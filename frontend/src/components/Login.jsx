@@ -5,7 +5,7 @@ import "../assets/styles/Login.css";
 import { useNavigate } from "react-router-dom";
 import Loader from "./Loader";
 import { triggerNotification } from "../utils/NotificationUtil";
-const Login = ({ setUserName }) => {
+const Login = ({ setUserName, setUserId }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState({
     email: "",
@@ -23,7 +23,7 @@ const Login = ({ setUserName }) => {
         setLoading(false);
         triggerNotification("Login success", "success");
         setUserName(response.data.userName);
-
+        setUserId(response.data.userId);
         console.log("login success");
         setUser({
           email: "",

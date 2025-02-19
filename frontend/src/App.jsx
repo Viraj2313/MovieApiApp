@@ -97,7 +97,10 @@ function App() {
           path="/about/:movieName"
           element={<AboutMovie selectedMovie={selectedMovie} />}
         />
-        <Route path="/login" element={<Login setUserName={setUserName} />} />
+        <Route
+          path="/login"
+          element={<Login setUserName={setUserName} setUserId={setUserId} />}
+        />
       </Routes>
     </>
   );

@@ -66,8 +66,8 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
         triggerNotification("Movie added to wishlist", "success");
       }
     } catch (error) {
+      triggerNotification(response.data.error);
       console.log(error);
-      alert(`unable to add to wishlist`, error);
     }
   };
   const handleClick = (movie) => {

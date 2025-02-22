@@ -15,12 +15,11 @@ const WishList = () => {
       const response = await axios.get(`${API_URL}/api/wishlist`, {
         withCredentials: true,
       });
-      alert("response: ", response.data);
-      triggerNotification(`${response.data},"error`);
+
+      triggerNotification(`${response.data}`, "error");
       setWishlist(response.data);
       console.log(wishlist);
     } catch (error) {
-      alert("error", error.message);
       setError(error.message);
     } finally {
       setLoading(false);
@@ -73,7 +72,7 @@ const WishList = () => {
                 </li>
               ))
             ) : (
-              <p>{error}No movies in wishlist</p>
+              <p>{error} No movies in wishlist</p>
             )}
           </ul>
         </>

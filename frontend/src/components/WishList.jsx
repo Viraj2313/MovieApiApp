@@ -15,6 +15,7 @@ const WishList = () => {
       const response = await axios.get(`${API_URL}/api/wishlist`, {
         withCredentials: true,
       });
+      alert("response: ", response.data);
       triggerNotification(`${response.data},"error`);
       setWishlist(response.data);
       console.log(wishlist);

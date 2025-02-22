@@ -13,7 +13,7 @@ export default defineConfig({
       "/api":{
         target:"https://mymovieapi-h7athbbzc4fmb0es.canadacentral-01.azurewebsites.net",
         changeOrigin:true,
-        rewrite:(path)=>path.replace(/^\/api/,""),
+        rewrite:(path)=>path.replace(/^\/api/,"/api"),
       }
     }
   },

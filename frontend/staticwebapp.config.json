@@ -1,0 +1,9 @@
+{
+    "routes": [
+      {
+        "route": "/api/{*any}",
+        "rewrite": "https://mymovieapi-h7athbbzc4fmb0es.canadacentral-01.azurewebsites.net/api/{*any}"
+      }
+    ]
+  }
+  

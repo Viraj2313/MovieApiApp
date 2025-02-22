@@ -20,6 +20,7 @@ const WishList = () => {
       setWishlist(response.data);
       console.log(wishlist);
     } catch (error) {
+      alert("error", error.message);
       setError(error.message);
     } finally {
       setLoading(false);
@@ -72,7 +73,7 @@ const WishList = () => {
                 </li>
               ))
             ) : (
-              <p>No movies in wishlist</p>
+              <p>{error}No movies in wishlist</p>
             )}
           </ul>
         </>

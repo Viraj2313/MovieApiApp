@@ -52,7 +52,7 @@ namespace WbApp.Controllers
 
                 if (jsonObject != null && jsonObject.ContainsKey("Search"))
                 {
-                    var searchResults = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(jsonObject["Search"].ToString());
+                    var searchResults = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(jsonObject["Search"]?.ToString() ?? "[]");
                     if (searchResults != null)
                     {
                         movieList = searchResults;
@@ -61,6 +61,7 @@ namespace WbApp.Controllers
             }
             catch
             {
+                return new List<Dictionary<string, string>>();
             }
 
             return movieList;

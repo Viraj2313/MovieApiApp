@@ -2,6 +2,7 @@
     "routes": [
         {
             "route": "/api/*",
+            "allowedMethods": ["GET", "POST", "PUT", "DELETE"],
             "rewrite": "https://mymovieapi-h7athbbzc4fmb0es.canadacentral-01.azurewebsites.net/api/"
         }
     ],

@@ -30,7 +30,7 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
     setLoading(true);
     getUserIdFromToken();
     axios
-      .get(`/api/home`)
+      .get(`${API_URL}/api/home`)
       .then((response) => {
         const movieData = response.data;
         setMovies(movieData.Search);

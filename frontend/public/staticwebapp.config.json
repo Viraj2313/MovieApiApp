@@ -1,8 +1,13 @@
 {
-    "routes":[
+    "routes": [
         {
-            "route":"/api/{*rest}",
-            "rewrite":"https://mymovieapi-h7athbbzc4fmb0es.canadacentral-01.azurewebsites.net"
+            "route": "/api/{*rest}",
+            "rewrite": "https://mymovieapi-h7athbbzc4fmb0es.canadacentral-01.azurewebsites.net/api/{rest}"
         }
-    ]
+    ],
+    "responseOverrides": {
+        "404": {
+            "rewrite": "/index.html"
+        }
+    }
 }

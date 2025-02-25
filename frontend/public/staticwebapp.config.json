@@ -2,6 +2,7 @@
     "routes": [
         {
             "route": "/api/*",
+            "allowedRoles": ["anonymous"],
             "rewrite": "https://mymovieapi-h7athbbzc4fmb0es.canadacentral-01.azurewebsites.net/api/"
         }
     ],
@@ -11,7 +12,7 @@
     },
     "responseOverrides": {
         "404": {
-            "rewrite": "/index.html"
+            "statusCode": 404
         }
     }
 }

@@ -9,10 +9,5 @@
     "navigationFallback": {
         "rewrite": "/index.html",
         "exclude": ["/api/*"]
-    },
-    "responseOverrides": {
-        "404": {
-            "statusCode": 404
-        }
     }
 }

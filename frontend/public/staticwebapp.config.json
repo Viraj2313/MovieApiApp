@@ -5,9 +5,8 @@
             "rewrite": "https://mymovieapi-h7athbbzc4fmb0es.canadacentral-01.azurewebsites.net/api/{rest}"
         }
     ],
-    "responseOverrides": {
-        "404": {
-            "rewrite": "/index.html"
-        }
+    "navigationFallback": {
+        "rewrite": "/index.html",
+        "exclude": ["/api/*"]
     }
 }

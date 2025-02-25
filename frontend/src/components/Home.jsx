@@ -33,7 +33,7 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
       .get(`${API_URL}/api/home`)
       .then((response) => {
         const movieData = response.data;
-        setMovies(movieData.Search);
+        setMovies(movieData);
         setLoading(false);
       })
       .catch((error) => {

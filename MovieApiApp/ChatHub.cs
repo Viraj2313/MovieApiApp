@@ -9,13 +9,13 @@ using Microsoft.AspNetCore.Http.HttpResults;
 public class ChatHub : Hub
 {
     private static readonly ConcurrentDictionary<int, string> UserConnections = new();
-
     private readonly MainDbContext _context;
 
     public ChatHub(MainDbContext context)
     {
         _context = context;
     }
+
     public async Task GetChatHistory(int senderId, int receiverId)
     {
         Console.WriteLine($"Fetching chat history for: {senderId} and {receiverId}");
@@ -31,7 +31,6 @@ public class ChatHub : Hub
         // Send the combined and sorted messages to the client
         await Clients.Caller.SendAsync("ReceiveChatHistory", messages);
     }
-
 
     public override async Task OnConnectedAsync()
     {
@@ -53,10 +52,6 @@ public class ChatHub : Hub
                 {
                     await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", msg.SenderId, msg.MessageText);
                 }
-
-                //Remove this line to keep messages in the database
-                // _context.ChatMessages.RemoveRange(pendingMessages);
-                // await _context.SaveChangesAsync();
             }
             else
             {
@@ -70,7 +65,6 @@ public class ChatHub : Hub
 
         await base.OnConnectedAsync();
     }
-
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
@@ -127,7 +121,5 @@ public class ChatHub : Hub
         {
             Console.WriteLine($"Error sending message: {ex.Message}");
         }
-
-
     }
 }

@@ -10,8 +10,8 @@ const Chat = () => {
   const [newMessage, setNewMessage] = useState("");
   const [connection, setConnection] = useState(null);
   const [friendName, setFriendName] = useState("");
-  const [loadingFriendName, setLoadingFriendName] = useState(true); // Loading state for friend name
-  const [loadingMessages, setLoadingMessages] = useState(true); // Loading state for messages
+  const [loadingFriendName, setLoadingFriendName] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(true);
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -24,10 +24,10 @@ const Chat = () => {
         `${API_URL}/api/friends/get-friend-name?receiverId=${receiverId}`
       );
       setFriendName(response.data);
-      setLoadingFriendName(false); // Friend name loaded
+      setLoadingFriendName(false);
     } catch (error) {
-      console.error("Error fetching friend name:", error); // Log any errors
-      setLoadingFriendName(false); // Still mark as loaded even in case of error
+      console.error("Error fetching friend name:", error);
+      setLoadingFriendName(false);
     }
   };
 
@@ -52,37 +52,45 @@ const Chat = () => {
         console.log("Connected to SignalR hub");
         setConnection(newConnection);
 
-        // Receive chat history and merge messages
+        // Handle chat history load once, on connection
         newConnection.on("ReceiveChatHistory", (history) => {
-          setMessages((prev) => {
-            const existingMessages = new Set(
-              prev.map((m) => `${m.user}:${m.message}`)
-            );
+          console.log("Received chat history:", history); // Log the received history
 
-            const newMessages = history
+          setMessages((prev) => {
+            const filteredHistory = history
               .map((msg) => ({
                 user: msg.senderId,
                 message: msg.messageText,
-                timestamp: new Date(msg.timestamp), // Convert to Date object
+                timestamp: new Date(msg.timestamp),
               }))
-              .filter(
-                (msg) => !existingMessages.has(`${msg.user}:${msg.message}`)
-              );
+              .filter((msg) => msg.message.trim() !== ""); // Filter empty messages
 
-            // Merge old and new messages, then sort by timestamp
-            return [...prev, ...newMessages].sort(
-              (a, b) => a.timestamp - b.timestamp
-            );
+            // Return the updated messages with no duplicates and sorted by timestamp
+            return filteredHistory.sort((a, b) => a.timestamp - b.timestamp);
           });
         });
 
-        // Fetch the chat history
+        // Handle receiving new messages
+        newConnection.on("ReceiveMessage", (senderId, message) => {
+          if (!message.trim()) return; // Avoid empty messages
+
+          // Add the new message to state
+          setMessages((prev) => [
+            ...prev,
+            {
+              user: senderId,
+              message: message,
+              timestamp: new Date(),
+            },
+          ]);
+        });
+
         return newConnection
           .invoke("GetChatHistory", parseInt(senderId), parseInt(receiverId))
           .catch((err) => console.error("Error fetching chat history:", err));
       })
       .then(() => {
-        setLoadingMessages(false); // Messages loaded
+        setLoadingMessages(false);
       })
       .catch((err) => console.error("Error connecting to SignalR:", err));
 
@@ -108,7 +116,11 @@ const Chat = () => {
 
       setMessages((prev) => [
         ...prev,
-        { user: parseInt(senderId), message: newMessage },
+        {
+          user: parseInt(senderId),
+          message: newMessage,
+          timestamp: new Date(),
+        },
       ]);
 
       setNewMessage("");
@@ -122,7 +134,6 @@ const Chat = () => {
       {loadingFriendName || loadingMessages ? (
         <>
           <p className="text-xl text-gray-700 mt-4">Loading Chat...</p>
-
           <Loader />
         </>
       ) : (
@@ -130,7 +141,6 @@ const Chat = () => {
           <div className="bg-blue-600 text-white text-center p-4 font-bold text-lg">
             Chat with {friendName}
           </div>
-          {/* Chat messages container with proper scrolling */}
           <div className="flex-1 overflow-auto p-4 space-y-2">
             {messages.map((msg, index) => (
               <div
@@ -148,7 +158,6 @@ const Chat = () => {
               </div>
             ))}
           </div>
-          {/* Input box always visible at the bottom */}
           <div className="p-4 bg-white flex items-center border-t sticky bottom-0">
             <input
               type="text"

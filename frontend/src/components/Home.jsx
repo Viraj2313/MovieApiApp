@@ -72,6 +72,7 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
   };
   const handleClick = (movie) => {
     setSelectedMovie(movie.imdbID);
+    console.log(movie);
     navigate(`/about/${movie.Title}`);
     console.log(`Clicked on movie with ID: ${movie.imdbID}`);
   };
@@ -84,6 +85,7 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
             movie.Title.toLowerCase().includes(word)
           );
         });
+
   return (
     <>
       {loading ? (
@@ -106,8 +108,8 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
 
           <ul className="movieList">
             {filteredMovies.length > 0 ? (
-              filteredMovies.map((movie) => (
-                <li key={movie.imdbID} className="movie">
+              filteredMovies.map((movie, index) => (
+                <li key={movie.imdbID + index} className="movie">
                   <img
                     src={movie.Poster}
                     alt=""

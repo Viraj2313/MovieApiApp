@@ -67,7 +67,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
-
+//chathub singnalr
+builder.Services.AddSignalR();
 // Add CORS configuration
 builder.Services.AddCors(options =>
 {
@@ -90,6 +91,10 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true;
+});
 
 var app = builder.Build();
 
@@ -100,9 +105,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 // Use CORS and session middleware
 app.UseCors("AllowSpecificOrigin");
-app.UseSession();  
+app.UseRouting();
+app.UseWebSockets();
+app.MapHub<ChatHub>("/chatHub");
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 

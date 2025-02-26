@@ -35,42 +35,46 @@ const SignUp = ({ setUserName }) => {
   };
 
   return (
-    <div className="form-box">
-      <form className="form" onSubmit={handleSubmit}>
-        <span className="title">Sign up</span>
-        <span className="subtitle">Create a free account with your email.</span>
-        <div className="form-container">
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={user.name}
-            onChange={(e) => setUserState({ ...user, name: e.target.value })}
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={user.email}
-            onChange={(e) => setUserState({ ...user, email: e.target.value })}
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={user.password}
-            onChange={(e) =>
-              setUserState({ ...user, password: e.target.value })
-            }
-          />
+    <div className="flex items-center justify-center h-screen">
+      <form onSubmit={handleSubmit}>
+        <div className="px-10 py-5 border-2 border-black rounded-2xl color  bg-gray-50">
+          <h1 className="text-center mb-25 text-3xl font-bold">Sign up</h1>
+          <div className="flex flex-col gap-5 ">
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={user.name}
+              onChange={(e) => setUserState({ ...user, name: e.target.value })}
+              className="border-2 w-60 h-10 
+                    rounded-xl "
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={user.email}
+              onChange={(e) => setUserState({ ...user, email: e.target.value })}
+              className="border-2 w-60 h-10 
+                    rounded-xl "
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={user.password}
+              onChange={(e) =>
+                setUserState({ ...user, password: e.target.value })
+              }
+              className="border-2 w-60 h-10 
+                    rounded-xl "
+            />
+            <button type="submit" className="hover:bg-red-700">
+              Submit
+            </button>
+          </div>
         </div>
-        <button type="submit">Sign up</button>
       </form>
-      <div className="form-section">
-        <p>
-          Have an account? <Link to="/login">Log in</Link>
-        </p>
-      </div>
     </div>
   );
 };

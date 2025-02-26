@@ -10,6 +10,8 @@ import WishList from "./components/WishList";
 import axios from "axios";
 import { API_URL } from "./config";
 import { triggerNotification } from "./utils/NotificationUtil";
+import Friends from "./components/Friends";
+import Chat from "./components/Chat";
 function App() {
   const navigate = useNavigate();
   const [user, setUserName] = useState(null);
@@ -79,9 +81,13 @@ function App() {
         setUserName={setUserName}
         setUserId={setUserId}
         handleLogout={handleLogout}
+        userId={userId}
       />
       <Routes>
-        <Route path="/wishlist" element={<WishList />}></Route>
+        <Route
+          path="/wishlist"
+          element={<WishList setSelectedMovie={setSelectedMovie} />}
+        ></Route>
         <Route
           path="/"
           element={
@@ -97,10 +103,18 @@ function App() {
           path="/about/:movieName"
           element={<AboutMovie selectedMovie={selectedMovie} />}
         />
+        setUserId={setUserId}
         <Route
           path="/login"
           element={<Login setUserName={setUserName} setUserId={setUserId} />}
         />
+        <Route
+          path="/friends"
+          element={
+            <Friends user={user} userId={userId} setUserId={setUserId} />
+          }
+        />
+        <Route path="/chatHub" element={<Chat />} />
       </Routes>
     </>
   );

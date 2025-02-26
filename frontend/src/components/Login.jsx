@@ -47,21 +47,40 @@ const Login = ({ setUserName, setUserId }) => {
             <Loader />
           </>
         ) : (
-          <div>
+          <div className="flex items-center justify-center h-screen">
             <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="email"
-                value={user.email}
-                onChange={(e) => setUser({ ...user, email: e.target.value })}
-              />
-              <input
-                type="password"
-                name="password"
-                value={user.password}
-                onChange={(e) => setUser({ ...user, password: e.target.value })}
-              />
-              <button type="submit">Submit</button>
+              <div className="px-10 py-5 border-2 border-black rounded-2xl color  bg-gray-50">
+                <h1 className="text-center mb-25 text-3xl font-bold">
+                  Login Here
+                </h1>
+                <div className="flex flex-col gap-5 ">
+                  <input
+                    placeholder="Enter your Email"
+                    type="text"
+                    name="email"
+                    value={user.email}
+                    onChange={(e) =>
+                      setUser({ ...user, email: e.target.value })
+                    }
+                    className="border-2 w-60 h-10 
+                    rounded-xl "
+                  />
+                  <input
+                    placeholder="Enter your Password"
+                    type="password"
+                    name="password"
+                    value={user.password}
+                    onChange={(e) =>
+                      setUser({ ...user, password: e.target.value })
+                    }
+                    className="border-2 w-60 h-10 
+                    rounded-xl"
+                  />
+                  <button type="submit" className="hover:bg-red-700">
+                    Submit
+                  </button>
+                </div>
+              </div>
             </form>
           </div>
         )}

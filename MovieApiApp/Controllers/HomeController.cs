@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace WbApp.Controllers
@@ -32,9 +31,9 @@ namespace WbApp.Controllers
                 var list1 = ExtractMovies(movies1);
                 var list2 = ExtractMovies(movies2);
 
-                var mixedMovies = list1.Concat(list2).OrderBy(_ => Guid.NewGuid()).ToList();
+                var mergedMovies = list1.Concat(list2).ToList();
 
-                return Ok(mixedMovies);
+                return Ok(mergedMovies);
             }
             catch
             {
@@ -48,6 +47,8 @@ namespace WbApp.Controllers
 
             try
             {
+                if (string.IsNullOrWhiteSpace(json)) return movieList;
+
                 var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
 
                 if (jsonObject != null && jsonObject.ContainsKey("Search"))
@@ -66,6 +67,5 @@ namespace WbApp.Controllers
 
             return movieList;
         }
-
     }
 }

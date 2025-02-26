@@ -22,6 +22,9 @@ jobs:
         with:
           submodules: true
           lfs: false
+      - name: Set up Vite environment variables
+        run: echo "VITE_REACT_APP_API_URL=${{ secrets.VITE_REACT_APP_API_URL }}" >> ./frontend/.env
+
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
       - name: Get Id Token

@@ -10,12 +10,21 @@ const Friends = ({ user, userId, setUserId }) => {
   const [friend, setFriend] = useState({});
   const [friendFound, setFriendFound] = useState(false);
   const [friendRequests, setFriendRequests] = useState([]);
-
+  const [loading, setLoading] = useState(true);
+  const Loader = () => (
+    <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-t-transparent border-blue-600"></div>
+  );
   useEffect(() => {
-    getFriendsList();
-    getFriendRequests();
-    getUserIdFromToken();
-  }, []);
+    const fetchData = async () => {
+      await getUserIdFromToken();
+      if (userId) {
+        getFriendsList();
+        getFriendRequests();
+      }
+    };
+
+    fetchData();
+  }, [userId]);
 
   const getUserIdFromToken = async () => {
     try {
@@ -46,11 +55,13 @@ const Friends = ({ user, userId, setUserId }) => {
 
   const getFriendsList = async () => {
     try {
+      console.log(userId);
       const response = await axios.get(
         `${API_URL}/api/friends/get-friends-list`,
         { params: { userId } }
       );
       if (response.status === 200) {
+        setLoading(false);
         setFriends(response.data);
       }
     } catch (error) {
@@ -125,6 +136,8 @@ const Friends = ({ user, userId, setUserId }) => {
                     {friend.friendName}
                   </Link>
                 ))
+              ) : { loading } ? (
+                <Loader />
               ) : (
                 <p className="text-gray-500">No friends added yet.</p>
               )}

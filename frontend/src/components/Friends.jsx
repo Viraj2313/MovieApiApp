@@ -182,7 +182,15 @@ const Friends = ({ user, userId, setUserId }) => {
 
           {/* Friend Requests */}
           <div className="lg:w-1/3 bg-white p-4 rounded-lg shadow-md mt-6 lg:mt-0">
-            <h3 className="text-lg font-semibold mb-2">Friend Requests</h3>
+            <h3 className="flex text-lg font-semibold mb-2 flex-row">
+              Friend Requests
+              <img
+                src="/refresh.png"
+                alt=""
+                className="ml-1.5 flex-row max-w-[7%] max-h-[7%] cursor-pointer"
+                onClick={getFriendsList}
+              />
+            </h3>
             <ul className="overflow-y-auto max-h-60 space-y-2">
               {friendRequests.length > 0 ? (
                 friendRequests.map((request) => (

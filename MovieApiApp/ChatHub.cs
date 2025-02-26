@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.SignalR;
 using WbApp.Data;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 public class ChatHub : Hub
 {
@@ -52,7 +54,7 @@ public class ChatHub : Hub
                     await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", msg.SenderId, msg.MessageText);
                 }
 
-                // ❌ Remove this line to keep messages in the database
+                //Remove this line to keep messages in the database
                 // _context.ChatMessages.RemoveRange(pendingMessages);
                 // await _context.SaveChangesAsync();
             }
@@ -125,5 +127,7 @@ public class ChatHub : Hub
         {
             Console.WriteLine($"Error sending message: {ex.Message}");
         }
+
+
     }
 }

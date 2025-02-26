@@ -176,5 +176,17 @@ namespace MovieApiApp.Controllers
             var friends = await _context.Friends.Where(u => u.UserId == userId).ToListAsync();
             return Ok(friends);
         }
+
+        [HttpGet("get-friend-name")]
+        public async Task<IActionResult> GetFriendName([FromQuery] int receiverId)
+        {
+
+            var user = await _context.Users.Where(u => u.Id == receiverId).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                throw new Exception("user not found");
+            }
+            return Ok(user.Name);
+        }
     }
 }

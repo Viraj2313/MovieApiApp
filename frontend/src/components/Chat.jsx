@@ -2,16 +2,40 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import * as signalR from "@microsoft/signalr";
 import { API_URL } from "../config";
+import axios from "axios";
+import Loader from "./Loader";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [connection, setConnection] = useState(null);
+  const [friendName, setFriendName] = useState("");
+  const [loadingFriendName, setLoadingFriendName] = useState(true); // Loading state for friend name
+  const [loadingMessages, setLoadingMessages] = useState(true); // Loading state for messages
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const senderId = params.get("senderId");
   const receiverId = params.get("receiverId");
+
+  const getFriendName = async () => {
+    try {
+      const response = await axios.get(
+        `${API_URL}/api/friends/get-friend-name?receiverId=${receiverId}`
+      );
+      setFriendName(response.data);
+      setLoadingFriendName(false); // Friend name loaded
+    } catch (error) {
+      console.error("Error fetching friend name:", error); // Log any errors
+      setLoadingFriendName(false); // Still mark as loaded even in case of error
+    }
+  };
+
+  useEffect(() => {
+    if (senderId && receiverId) {
+      getFriendName();
+    }
+  }, [senderId, receiverId]);
 
   useEffect(() => {
     if (!senderId || !receiverId) return;
@@ -57,6 +81,9 @@ const Chat = () => {
           .invoke("GetChatHistory", parseInt(senderId), parseInt(receiverId))
           .catch((err) => console.error("Error fetching chat history:", err));
       })
+      .then(() => {
+        setLoadingMessages(false); // Messages loaded
+      })
       .catch((err) => console.error("Error connecting to SignalR:", err));
 
     return () => {
@@ -91,48 +118,54 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-5rem)]">
-      {" "}
-      {/* Adjust height based on navbar */}
-      <div className="bg-blue-600 text-white text-center p-4 font-bold text-lg">
-        Chat with User {receiverId}
-      </div>
-      {/* Chat messages container with proper scrolling */}
-      <div className="flex-1 overflow-auto p-4 space-y-2">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`max-w-xs p-3 rounded-lg text-white shadow-md ${
-              msg.user == senderId
-                ? "bg-blue-500 ml-auto"
-                : "bg-gray-700 mr-auto"
-            }`}
-          >
-            <strong>
-              {msg.user == senderId ? "You" : `User ${msg.user}`}:
-            </strong>
-            <p>{msg.message}</p>
+    <>
+      {loadingFriendName || loadingMessages ? (
+        <>
+          <Loader />
+        </>
+      ) : (
+        <div className="flex flex-col h-[calc(100vh-5rem)]">
+          <div className="bg-blue-600 text-white text-center p-4 font-bold text-lg">
+            Chat with {friendName}
           </div>
-        ))}
-      </div>
-      {/* Input box always visible at the bottom */}
-      <div className="p-4 bg-white flex items-center border-t sticky bottom-0">
-        <input
-          type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Type a message..."
-          className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          onClick={sendMessage}
-          disabled={!connection}
-          className="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
-        >
-          Send
-        </button>
-      </div>
-    </div>
+          {/* Chat messages container with proper scrolling */}
+          <div className="flex-1 overflow-auto p-4 space-y-2">
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`max-w-xs p-3 rounded-lg text-white shadow-md ${
+                  msg.user == senderId
+                    ? "bg-blue-500 ml-auto"
+                    : "bg-gray-700 mr-auto"
+                }`}
+              >
+                <strong>
+                  {msg.user == senderId ? "You" : `${friendName}`}:
+                </strong>
+                <p>{msg.message}</p>
+              </div>
+            ))}
+          </div>
+          {/* Input box always visible at the bottom */}
+          <div className="p-4 bg-white flex items-center border-t sticky bottom-0">
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Type a message..."
+              className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              onClick={sendMessage}
+              disabled={!connection}
+              className="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
+            >
+              Send
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

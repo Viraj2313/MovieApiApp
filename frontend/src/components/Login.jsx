@@ -1,17 +1,15 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { API_URL } from "../config";
-import "../assets/styles/Login.css";
 import { useNavigate } from "react-router-dom";
 import Loader from "./Loader";
 import { triggerNotification } from "../utils/NotificationUtil";
+
 const Login = ({ setUserName, setUserId }) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState({
-    email: "",
-    password: "",
-  });
+  const [user, setUser] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -19,73 +17,59 @@ const Login = ({ setUserName, setUserId }) => {
       const response = await axios.post(`${API_URL}/api/login`, user, {
         withCredentials: true,
       });
-      if (response.status == 200) {
-        setLoading(false);
+      if (response.status === 200) {
         triggerNotification("Login success", "success");
         setUserName(response.data.userName);
         setUserId(response.data.userId);
-        console.log("login success");
-        setUser({
-          email: "",
-          password: "",
-        });
+        setUser({ email: "", password: "" });
         navigate("/");
       }
-      console.log(response.data.userName);
     } catch (error) {
+      triggerNotification("Login failed", "error");
+    } finally {
       setLoading(false);
-      console.error("Login failed with error:", error);
     }
   };
+
   return (
-    <>
-      <h1>Login</h1>
-      <div>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
+        <h1 className="text-2xl font-bold text-center mb-4">Login</h1>
         {loading ? (
-          <>
-            <h1>Logging, please wait</h1>
+          <div className="flex flex-col items-center justify-center space-y-2">
+            <p className="text-gray-500">Logging in, please wait...</p>
             <Loader />
-          </>
-        ) : (
-          <div className="flex items-center justify-center h-screen">
-            <form onSubmit={handleSubmit}>
-              <div className="px-10 py-5 border-2 border-black rounded-2xl color  bg-gray-50">
-                <h1 className="text-center mb-25 text-3xl font-bold">
-                  Login Here
-                </h1>
-                <div className="flex flex-col gap-5 ">
-                  <input
-                    placeholder="Enter your Email"
-                    type="text"
-                    name="email"
-                    value={user.email}
-                    onChange={(e) =>
-                      setUser({ ...user, email: e.target.value })
-                    }
-                    className="border-2 w-60 h-10 
-                    rounded-xl "
-                  />
-                  <input
-                    placeholder="Enter your Password"
-                    type="password"
-                    name="password"
-                    value={user.password}
-                    onChange={(e) =>
-                      setUser({ ...user, password: e.target.value })
-                    }
-                    className="border-2 w-60 h-10 
-                    rounded-xl"
-                  />
-                  <button type="submit" className="hover:bg-red-700">
-                    Submit
-                  </button>
-                </div>
-              </div>
-            </form>
           </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+            <input
+              type="email"
+              name="email"
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              placeholder="Enter your Email"
+              className="border rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              value={user.password}
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
+              placeholder="Enter your Password"
+              className="border rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <button
+              type="submit"
+              className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all cursor-pointer"
+            >
+              Login
+            </button>
+          </form>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

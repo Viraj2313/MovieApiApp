@@ -9,7 +9,7 @@ const Logout = ({ handleLogout }) => {
   return (
     <button
       style={{ backgroundColor: "#ff5722" }}
-      className="h-10 my-4 rounded-xs text-white w-15"
+      className="h-10 my-4 rounded-xs text-white w-15 cursor-pointer"
       onClick={handleLogout}
     >
       Log out

@@ -25,26 +25,34 @@ const Chat = () => {
     newConnection
       .start()
       .then(() => {
-        console.log("✅ Connected to SignalR hub");
+        console.log("Connected to SignalR hub");
         setConnection(newConnection);
 
-        newConnection.on("ReceiveMessage", (user, message) => {
-          setMessages((prev) => [...prev, { user, message }]);
-        });
-
+        // Receive chat history and merge messages
         newConnection.on("ReceiveChatHistory", (history) => {
-          console.log("📜 Chat history received:", history);
-          setMessages((prev) => [
-            ...history.map((msg) => ({
-              user: msg.senderId,
-              message: msg.messageText,
-            })),
-            ...prev, // Keep existing messages
-          ]);
+          setMessages((prev) => {
+            const existingMessages = new Set(
+              prev.map((m) => `${m.user}:${m.message}`)
+            );
+
+            const newMessages = history
+              .map((msg) => ({
+                user: msg.senderId,
+                message: msg.messageText,
+                timestamp: new Date(msg.timestamp), // Convert to Date object
+              }))
+              .filter(
+                (msg) => !existingMessages.has(`${msg.user}:${msg.message}`)
+              );
+
+            // Merge old and new messages, then sort by timestamp
+            return [...prev, ...newMessages].sort(
+              (a, b) => a.timestamp - b.timestamp
+            );
+          });
         });
 
-        console.log("📡 Fetching chat history for:", senderId, receiverId);
-
+        // Fetch the chat history
         return newConnection
           .invoke("GetChatHistory", parseInt(senderId), parseInt(receiverId))
           .catch((err) => console.error("Error fetching chat history:", err));
@@ -78,32 +86,52 @@ const Chat = () => {
 
       setNewMessage("");
     } catch (error) {
-      console.error("❌ Error sending message:", error);
+      console.error("Error sending message:", error);
     }
   };
 
   return (
-    <div>
-      <h2>Chat with User {receiverId}</h2>
-      <div>
+    <div className="flex flex-col h-[calc(100vh-5rem)]">
+      {" "}
+      {/* Adjust height based on navbar */}
+      <div className="bg-blue-600 text-white text-center p-4 font-bold text-lg">
+        Chat with User {receiverId}
+      </div>
+      {/* Chat messages container with proper scrolling */}
+      <div className="flex-1 overflow-auto p-4 space-y-2">
         {messages.map((msg, index) => (
-          <div key={index}>
+          <div
+            key={index}
+            className={`max-w-xs p-3 rounded-lg text-white shadow-md ${
+              msg.user == senderId
+                ? "bg-blue-500 ml-auto"
+                : "bg-gray-700 mr-auto"
+            }`}
+          >
             <strong>
               {msg.user == senderId ? "You" : `User ${msg.user}`}:
-            </strong>{" "}
-            {msg.message}
+            </strong>
+            <p>{msg.message}</p>
           </div>
         ))}
       </div>
-      <input
-        type="text"
-        value={newMessage}
-        onChange={(e) => setNewMessage(e.target.value)}
-        placeholder="Type a message..."
-      />
-      <button onClick={sendMessage} disabled={!connection}>
-        Send
-      </button>
+      {/* Input box always visible at the bottom */}
+      <div className="p-4 bg-white flex items-center border-t sticky bottom-0">
+        <input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="Type a message..."
+          className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button
+          onClick={sendMessage}
+          disabled={!connection}
+          className="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
+        >
+          Send
+        </button>
+      </div>
     </div>
   );
 };

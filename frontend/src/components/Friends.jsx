@@ -180,7 +180,7 @@ const Friends = ({ user, userId, setUserId }) => {
             )}
           </div>
 
-          {/* Friend Requests */}
+          {/*Friend Requests */}
           <div className="lg:w-1/3 bg-white p-4 rounded-lg shadow-md mt-6 lg:mt-0">
             <h3 className="flex text-lg font-semibold mb-2 flex-row">
               Friend Requests

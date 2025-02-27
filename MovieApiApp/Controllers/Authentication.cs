@@ -18,34 +18,33 @@ namespace WbApp.Controllers
         public readonly MainDbContext _context;
         private readonly TokenService _tokenService;
         public readonly HttpClient _httpClient;
-        public AuthenticationController(MainDbContext context, HttpClient client,TokenService tokenService)
+        public AuthenticationController(MainDbContext context, HttpClient client, TokenService tokenService)
         {
-            _tokenService= tokenService;
+            _tokenService = tokenService;
             _context = context;
             _httpClient = client;
         }
-      
+
 
 
         //for sign up/register
         [HttpPost("register")]
         public async Task<IActionResult> SignUp([FromBody] User user)
         {
-            user.Password =BCrypt.Net.BCrypt.HashPassword(user.Password);
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            //HttpContext.Session.SetString("User Id", user.Id.ToString());
-            var token=_tokenService.GenerateToken(user);
-             Response.Cookies.Append("jwt", token, new CookieOptions
-             {
-                 HttpOnly = true,
-                 Secure = true,
-                 SameSite = SameSiteMode.None,
-                 Expires = DateTime.UtcNow.AddHours(2)
-             });
-            return Ok(new { message = "User registered successfully" , userId=user.Id});
+            var token = _tokenService.GenerateToken(user);
+            Response.Cookies.Append("jwt", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddHours(2)
+            });
+            return Ok(new { message = "User registered successfully", userId = user.Id });
         }
-      
+
 
 
         [HttpGet("check-session")]
@@ -77,24 +76,24 @@ namespace WbApp.Controllers
         public async Task<IActionResult> LogIn([FromBody] LoginReq loginReq)
         {
             var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginReq.Email);
-            if (existingUser == null || !BCrypt.Net.BCrypt.Verify(loginReq.Password,existingUser.Password))
+            if (existingUser == null || !BCrypt.Net.BCrypt.Verify(loginReq.Password, existingUser.Password))
             {
                 return Unauthorized(new { message = "Invalid email or password" });
 
 
             }
-            //HttpContext.Session.SetString("User Id", existingUser.Id.ToString());
-            //HttpContext.Session.SetString("User Name", existingUser.Name.ToString());
-            var token =_tokenService.GenerateToken(existingUser);
+            var token = _tokenService.GenerateToken(existingUser);
             Response.Cookies.Append("jwt", token, new CookieOptions
             {
-                HttpOnly = true,  
-                Secure = true,     
+                HttpOnly = true,
+                Secure = true,
                 SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddHours(2) 
+                Expires = DateTime.UtcNow.AddHours(2)
             });
-            return Ok(new { message = "login success",userId = existingUser.Id, userName= existingUser.Name });
+            return Ok(new { message = "login success", userId = existingUser.Id, userName = existingUser.Name });
         }
+
+        //logout
         [HttpPost("logout")]
         public IActionResult Logout()
         {
@@ -119,7 +118,7 @@ namespace WbApp.Controllers
         [HttpGet("user")]
         public async Task<IActionResult> GetUser()
         {
-            var token = Request.Cookies["jwt"]; 
+            var token = Request.Cookies["jwt"];
 
             if (string.IsNullOrEmpty(token))
             {

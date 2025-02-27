@@ -28,7 +28,7 @@ const AboutMovie = ({ selectedMovie }) => {
   };
 
   const goToTrailer = async (movieTitle) => {
-    const text = `Just give a url for the youtube trailer of this movie ${movieTitle}`;
+    const text = `Just give a url for the youtube trailer of this movie ${movieTitle} dont give any other text with it `;
 
     // Open the tab first (blank page)
     const newTab = window.open("", "_blank");
@@ -53,6 +53,8 @@ const AboutMovie = ({ selectedMovie }) => {
 
   const goToImdb = async (movieTitle) => {
     const text = `Just give a url for imdb page of this movie${movieTitle} dont give any other text with it `;
+    const newTab = window.open("", "_blank");
+
     try {
       const response = await axios.post(`${API_URL}/api/gemini/ask`, {
         prompt: text,
@@ -60,10 +62,13 @@ const AboutMovie = ({ selectedMovie }) => {
       console.log(response.data);
       const youtubeUrl = response.data;
       if (youtubeUrl) {
-        window.open(youtubeUrl, "_blank");
+        newTab.location.href = youtubeUrl; // Now set the URL to the opened tab
+      } else {
+        newTab.close(); // If no URL, close the empty tab
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching trailer URL:", error);
+      newTab.close(); // Close tab on error
     }
   };
   return (

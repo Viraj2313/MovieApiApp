@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { API_URL } from "../config";
 import Loader from "./Loader"; // Assuming you have a Loader component
 import "../assets/styles/AboutMovie.css";
+import { useOpenLink } from "../hooks/useOpenLink";
 
 const AboutMovie = ({ selectedMovie }) => {
   const [movieDetails, setMovieDetails] = useState(null);
@@ -28,6 +29,7 @@ const AboutMovie = ({ selectedMovie }) => {
   };
 
   const goToTrailer = async (movieTitle) => {
+    const openLink = useOpenLink();
     const text = `Just give a url for the youtube trailer of this movie ${movieTitle}`;
     try {
       const response = await axios.post(`${API_URL}/api/gemini/ask`, {
@@ -36,13 +38,14 @@ const AboutMovie = ({ selectedMovie }) => {
       console.log(response.data);
       const youtubeUrl = response.data;
       if (youtubeUrl) {
-        window.open(youtubeUrl, "_blank");
+        openLink(youtubeUrl);
       }
     } catch (error) {
       console.log(error);
     }
   };
   const goToImdb = async (movieTitle) => {
+    const openLink = useOpenLink();
     const text = `Just give a url for imdb page of this movie${movieTitle} dont give any other text with it `;
     try {
       const response = await axios.post(`${API_URL}/api/gemini/ask`, {
@@ -51,7 +54,7 @@ const AboutMovie = ({ selectedMovie }) => {
       console.log(response.data);
       const youtubeUrl = response.data;
       if (youtubeUrl) {
-        window.open(youtubeUrl, "_blank");
+        openLink(youtubeUrl);
       }
     } catch (error) {
       console.log(error);

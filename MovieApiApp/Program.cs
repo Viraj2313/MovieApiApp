@@ -4,12 +4,14 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WbApp.Data;
 using WbApp.Controllers;
+using WbApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 
 builder.Services.AddScoped<TokenService>(); // Register TokenService
+builder.Services.AddHttpClient<GeminiService>();
 
 // Add JWT authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

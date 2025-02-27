@@ -61,21 +61,27 @@ const WishList = ({ setSelectedMovie }) => {
       ) : (
         <>
           <div>WishList</div>
-          <ul className="movieList">
+          <ul className="movie-list grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-5 p-5">
             {wishlist && wishlist.length > 0 ? (
               wishlist.map((item) => (
-                <li key={item.id}>
+                <li
+                  key={item.id}
+                  className="list-none flex flex-col text-center justify-start movie relative cursor-pointer overflow-hidden shadow-[0px_1px_11px_5px_rgba(0,0,0,0.4)] after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-b after:from-transparent after:to-[rgba(0,0,0,0.7)] after:z-10 after:pointer-events-none"
+                >
                   <img
                     src={item.moviePoster}
                     alt={`${item.movieTitle} Poster`}
                     onClick={() => handleClick(item)}
+                    className="w-[100%] h-auto transition-transform duration-300 ease hover:scale-110 hover:z-10"
                   />
-                  <h3>
-                    {item.movieTitle}
+                  <h3 className="absolute bottom-2.5 left-1/2 transform -translate-x-1/2 z-20 text-white p-1.5 px-4 rounded-md text-lg shadow-[1px_1px_5px_rgba(0,0,0,0.8)] w-64">
+                    <span className="break-words mr-4 text-xl">
+                      {item.movieTitle}
+                    </span>
                     <button
                       onClick={() => handleRemove(item)}
                       style={{ backgroundColor: "#ff5722" }}
-                      className="bg-blue-600 text-white rounded-lg px-6 py-3 text-lg font-semibold shadow-md hover:scale-105 transition-transform duration-300 hover:bg-blue-700 focus:outline-none cursor-pointer"
+                      className="mt-2 border-none cursor-pointer bg-[#ff5722] text-white p-1.5 px-4 rounded-md transition-colors duration-300 ease relative z-20 hover:bg-[#e64a19]"
                     >
                       Remove
                     </button>

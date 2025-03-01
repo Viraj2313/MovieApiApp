@@ -50,8 +50,8 @@ const WishList = ({ setSelectedMovie }) => {
   const handleClick = (movie) => {
     setSelectedMovie(movie.movieId);
     console.log(movie);
-    navigate(`/about/${movie.movieTitle}`);
-    console.log(`Clicked on movie: ${movie.movieTitle}`);
+    navigate(`/about/${movie.movieTitle}/${movie.movieId}`);
+    console.log(`Clicked on movie with ID: ${movie.imdbID}`);
   };
 
   return (

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 import Loader from "./Loader";
 import { triggerNotification } from "../utils/NotificationUtil";
+import SaveMovie from "./SaveMovie";
 const Home = ({ setSelectedMovie, userId, setUserId }) => {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
@@ -43,33 +44,33 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
       });
   }, []);
 
-  const handleSave = async (movie) => {
-    try {
-      if (!userId) {
-        triggerNotification("You need to login first", "error");
-        return;
-      }
+  // const handleSave = async (movie) => {
+  //   try {
+  //     if (!userId) {
+  //       triggerNotification("You need to login first", "error");
+  //       return;
+  //     }
 
-      const moviesToSave = {
-        userId: userId,
-        movieTitle: movie.Title,
-        movieId: movie.imdbID,
-        moviePoster: movie.Poster,
-      };
-      console.log(moviesToSave);
-      const response = await axios.post(
-        `${API_URL}/api/add_wishlist`,
-        moviesToSave,
-        { withCredentials: true }
-      );
-      if (response.status == 200) {
-        triggerNotification("Movie added to wishlist", "success");
-      }
-    } catch (error) {
-      triggerNotification(response.data.error);
-      console.log(error);
-    }
-  };
+  //     const moviesToSave = {
+  //       userId: userId,
+  //       movieTitle: movie.Title,
+  //       movieId: movie.imdbID,
+  //       moviePoster: movie.Poster,
+  //     };
+  //     console.log(moviesToSave);
+  //     const response = await axios.post(
+  //       `${API_URL}/api/add_wishlist`,
+  //       moviesToSave,
+  //       { withCredentials: true }
+  //     );
+  //     if (response.status == 200) {
+  //       triggerNotification("Movie added to wishlist", "success");
+  //     }
+  //   } catch (error) {
+  //     triggerNotification(response.data.error);
+  //     console.log(error);
+  //   }
+  // };
   const handleClick = (movie) => {
     setSelectedMovie(movie.imdbID);
     console.log(movie);
@@ -121,12 +122,13 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
                   />
                   <h3 className="absolute bottom-2.5 left-1/2 transform -translate-x-1/2 z-20 text-white p-1.5 px-4 rounded-md text-lg shadow-[1px_1px_5px_rgba(0,0,0,0.8)] w-64">
                     {movie.Title}{" "}
-                    <button
+                    {/* <button
                       className="mt-2 border-none cursor-pointer bg-[#ff5722] text-white p-1.5 px-4 rounded-md transition-colors duration-300 ease relative z-20 hover:bg-[#e64a19]"
                       onClick={() => handleSave(movie)}
                     >
                       Save
-                    </button>
+                    </button> */}
+                    <SaveMovie movie={movie} userId={userId} />
                   </h3>
                 </li>
               ))

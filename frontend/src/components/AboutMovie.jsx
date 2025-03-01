@@ -31,19 +31,23 @@ const AboutMovie = ({ selectedMovie }) => {
   const goToTrailer = async (movieTitle) => {
     const openLink = useOpenLink();
     const text = `Just give a url for the youtube trailer of this movie ${movieTitle}`;
+    let youtubeUrl = "";
+
     try {
       const response = await axios.post(`${API_URL}/api/gemini/ask`, {
         prompt: text,
       });
       console.log(response.data);
-      const youtubeUrl = response.data;
-      if (youtubeUrl) {
-        openLink(youtubeUrl);
-      }
+      youtubeUrl = response.data;
     } catch (error) {
       console.log(error);
     }
+
+    if (youtubeUrl) {
+      openLink(youtubeUrl);
+    }
   };
+
   const goToImdb = async (movieTitle) => {
     const openLink = useOpenLink();
     const text = `Just give a url for imdb page of this movie${movieTitle} dont give any other text with it `;

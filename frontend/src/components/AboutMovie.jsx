@@ -4,6 +4,7 @@ import { API_URL } from "../config";
 import Loader from "./Loader"; // Assuming you have a Loader component
 import "../assets/styles/AboutMovie.css";
 import { useOpenLink } from "../hooks/useOpenLink";
+import { FaWhatsapp, FaTelegramPlane } from "react-icons/fa";
 
 const AboutMovie = ({ selectedMovie }) => {
   const [movieDetails, setMovieDetails] = useState(null);
@@ -145,32 +146,33 @@ const AboutMovie = ({ selectedMovie }) => {
     };
 
     return (
-      <div className="relative inline-block">
+      <div className="relative inline-block text-center">
         <button
-          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition cursor-pointer"
+          className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition cursor-pointer shadow-md"
           onClick={() => setShowMenu(!showMenu)}
         >
           Share with Friends
         </button>
         {showMenu && (
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-10">
+          <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl ring-1 ring-black ring-opacity-5 z-10 overflow-hidden animate-fade-in">
             <button
               onClick={() => openLink(whatsappUrl)}
-              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
+              className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-100 transition w-full"
             >
-              Share on WhatsApp
+              <FaWhatsapp className="text-green-500" /> Share on WhatsApp
             </button>
             <button
               onClick={() => openLink(telegramUrl)}
-              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
+              className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-blue-100 transition w-full"
             >
-              Share on Telegram
+              <FaTelegramPlane className="text-blue-500" /> Share on Telegram
             </button>
           </div>
         )}
       </div>
     );
   };
+
   return (
     <div className="max-w-screen-lg mx-auto p-4">
       {loading ? (

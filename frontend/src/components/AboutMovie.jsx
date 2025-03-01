@@ -8,6 +8,8 @@ import { useOpenLink } from "../hooks/useOpenLink";
 const AboutMovie = ({ selectedMovie }) => {
   const [movieDetails, setMovieDetails] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [watchPlatforms, setWatchPlatforms] = useState([]);
+
   useEffect(() => {
     if (selectedMovie) {
       fetchMovieDetails();
@@ -21,6 +23,7 @@ const AboutMovie = ({ selectedMovie }) => {
         `${API_URL}/api/movie_details?imdbID=${selectedMovie}`
       );
       setMovieDetails(response.data);
+      await whereToWatch(response.data.Title);
     } catch (error) {
       console.error("Error fetching movie details:", error);
     } finally {
@@ -30,18 +33,17 @@ const AboutMovie = ({ selectedMovie }) => {
 
   const goToTrailer = async (movieTitle) => {
     const openLink = useOpenLink();
-    const text = `Just give a url for the youtube trailer of this movie ${movieTitle}`;
+    const text = `Just give a url for the youtube trailer of this movie ${movieTitle} dont give any other text with it`;
 
-    const newTab = openLink("about:blank");
+    const newTab = openLink(`/loading`, "_blank");
 
     try {
       const response = await axios.post(`${API_URL}/api/gemini/ask`, {
         prompt: text,
       });
-      console.log(response.data);
       const youtubeUrl = response.data;
 
-      if (youtubeUrl) {
+      if (youtubeUrl && newTab) {
         newTab.location.href = youtubeUrl;
       }
     } catch (error) {
@@ -52,26 +54,127 @@ const AboutMovie = ({ selectedMovie }) => {
 
   const goToImdb = async (movieTitle) => {
     const openLink = useOpenLink();
-    const text = `Just give a url for imdb page of this movie${movieTitle} dont give any other text with it `;
+    const text = `Just give a url for imdb page of this movie ${movieTitle} dont give any other text with it`;
+    const newTab = openLink("/loading", "_blank");
+    try {
+      const response = await axios.post(`${API_URL}/api/gemini/ask`, {
+        prompt: text,
+      });
+      const imdbUrl = response.data;
+      if (imdbUrl && newTab) {
+        newTab.location.href = imdbUrl;
+      }
+    } catch (error) {
+      console.log(error);
+      newTab.close();
+    }
+  };
+
+  const whereToWatch = async (movieTitle) => {
+    const text = `where to watch ${movieTitle} just give array nothing else`;
+    try {
+      const response = await axios.post(`${API_URL}/api/gemini/ask`, {
+        prompt: text,
+      });
+
+      if (Array.isArray(response.data)) {
+        setWatchPlatforms(response.data);
+      } else {
+        setWatchPlatforms([]); // Set empty array if the response is not an array
+      }
+    } catch (error) {
+      console.log(error);
+      setWatchPlatforms([]);
+    }
+  };
+
+  const goToWiki = async (movieTitle) => {
+    const text = `just give wikipedia url for the movie ${movieTitle}`;
+    const openLink = useOpenLink();
+    const newTab = openLink("/loading", "_blank");
     try {
       const response = await axios.post(`${API_URL}/api/gemini/ask`, {
         prompt: text,
       });
       console.log(response.data);
-      const youtubeUrl = response.data;
-      if (youtubeUrl) {
-        openLink(youtubeUrl);
+      const wikiUrl = response.data;
+
+      if (wikiUrl && newTab) {
+        console.log(wikiUrl);
+        newTab.location.href = wikiUrl;
       }
     } catch (error) {
+      newTab.close();
       console.log(error);
     }
+  };
+
+  const getReviews = async (movieTitle) => {
+    const text = `Just give Rotten Tomatoes url for the movie ${movieTitle} nothing else`;
+    const openLink = useOpenLink();
+    const newTab = openLink("/loading", "_blank");
+
+    try {
+      const response = await axios.post(`${API_URL}/api/gemini/ask`, {
+        prompt: text,
+      });
+      console.log(response.data);
+      const reviewUrl = response.data;
+
+      if (reviewUrl && newTab) {
+        console.log(reviewUrl);
+        newTab.location.href = reviewUrl;
+      }
+    } catch (error) {
+      newTab.close();
+      console.error("Failed to get Rotten Tomatoes URL:", error);
+    }
+  };
+  const ShareMovieButton = ({ movieTitle }) => {
+    const [showMenu, setShowMenu] = useState(false);
+    const movieUrl = `https://yourwebsite.com/movie/${movieTitle}`;
+    const shareText = `Hey! Check out this movie "${movieTitle}". Here's the link: ${movieUrl}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(
+      movieUrl
+    )}&text=${encodeURIComponent(shareText)}`;
+
+    const openLink = (url) => {
+      window.open(url, "_blank");
+      setShowMenu(false);
+    };
+
+    return (
+      <div className="relative inline-block">
+        <button
+          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition cursor-pointer"
+          onClick={() => setShowMenu(!showMenu)}
+        >
+          Share with Friends
+        </button>
+        {showMenu && (
+          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-10">
+            <button
+              onClick={() => openLink(whatsappUrl)}
+              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
+            >
+              Share on WhatsApp
+            </button>
+            <button
+              onClick={() => openLink(telegramUrl)}
+              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
+            >
+              Share on Telegram
+            </button>
+          </div>
+        )}
+      </div>
+    );
   };
   return (
     <div className="max-w-screen-lg mx-auto p-4">
       {loading ? (
         <div className="flex justify-center items-center h-vw">
-          {" "}
-          {/* Centering container */}
           <Loader />
         </div>
       ) : movieDetails ? (
@@ -80,32 +183,65 @@ const AboutMovie = ({ selectedMovie }) => {
             About Movie
           </h1>
           <div className="bg-white shadow-lg rounded-lg overflow-hidden p-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4 ">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
               {movieDetails.Title}
             </h2>
-            <div className="flex justify-center mb-4">
-              <img
-                className="rounded-lg shadow-md max-w-xs"
-                src={movieDetails.Poster}
-                alt={movieDetails.Title}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex justify-center">
+                <img
+                  className="rounded-lg shadow-md max-w-xs"
+                  src={movieDetails.Poster}
+                  alt={movieDetails.Title}
+                />
+              </div>
+              <div className="space-y-4">
+                {Array.isArray(watchPlatforms) && watchPlatforms.length > 0 && (
+                  <div className="border border-gray-200 rounded-lg p-6 shadow-sm bg-white">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center tracking-wide">
+                      Where to Watch
+                    </h3>
+                    <ul className="flex flex-wrap justify-center gap-3">
+                      {watchPlatforms.map((platform, index) => (
+                        <li
+                          key={index}
+                          className="px-4 py-2 bg-gray-100 rounded-md text-gray-700 text-sm font-medium hover:bg-gray-200 transition"
+                        >
+                          {platform}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="flex justify-center mb-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 mt-4 mb-4 sm:flex sm:justify-center sm:gap-3">
               <button
-                type="submit"
                 className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition cursor-pointer"
                 onClick={() => goToTrailer(movieDetails.Title)}
               >
-                See trailer on youtube
+                See Trailer on YouTube
               </button>
               <button
-                type="submit"
-                className="bg-amber-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition cursor-pointer"
+                className="bg-amber-500 text-white px-4 py-2 rounded-md hover:bg-amber-600 transition cursor-pointer"
                 onClick={() => goToImdb(movieDetails.Title)}
               >
-                See Details on Imdb
+                See Details on IMDb
               </button>
+              <button
+                className="bg-zinc-300 text-black px-4 py-2 rounded-md hover:bg-zinc-600 transition cursor-pointer"
+                onClick={() => goToWiki(movieDetails.Title)}
+              >
+                Know more on Wikipedia
+              </button>
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition cursor-pointer"
+                onClick={() => getReviews(movieDetails.Title)}
+              >
+                Read Reviews (Rotten Tomatoes)
+              </button>
+              <ShareMovieButton movieTitle={movieDetails.Title} />
             </div>
+
             <p className="text-lg text-gray-700">{movieDetails.Plot}</p>
           </div>
         </div>

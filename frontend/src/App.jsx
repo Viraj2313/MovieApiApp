@@ -12,6 +12,8 @@ import { API_URL } from "./config";
 import { triggerNotification } from "./utils/NotificationUtil";
 import Friends from "./components/Friends";
 import Chat from "./components/Chat";
+import LoadingPage from "./components/LoadingPage";
+import { MantineProvider, Button } from "@mantine/core";
 function App() {
   const navigate = useNavigate();
   const [user, setUserName] = useState(null);
@@ -115,6 +117,7 @@ function App() {
           }
         />
         <Route path="/chatHub" element={<Chat />} />
+        <Route path="/loading" element={<LoadingPage />} />
       </Routes>
     </>
   );

@@ -31,31 +31,22 @@ const AboutMovie = ({ selectedMovie }) => {
   const goToTrailer = async (movieTitle) => {
     const openLink = useOpenLink();
     const text = `Just give a url for the youtube trailer of this movie ${movieTitle}`;
-    // Open a blank tab immediately to bypass Safari's popup blocker
-    const newTab = openLink("about:blank");
 
-    let youtubeUrl = "";
+    const newTab = openLink("about:blank");
 
     try {
       const response = await axios.post(`${API_URL}/api/gemini/ask`, {
         prompt: text,
       });
       console.log(response.data);
-
       const youtubeUrl = response.data;
 
       if (youtubeUrl) {
         newTab.location.href = youtubeUrl;
       }
-
-      youtubeUrl = response.data;
     } catch (error) {
       console.log(error);
       newTab.close();
-    }
-
-    if (youtubeUrl) {
-      openLink(youtubeUrl);
     }
   };
 

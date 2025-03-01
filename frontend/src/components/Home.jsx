@@ -73,7 +73,7 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
   const handleClick = (movie) => {
     setSelectedMovie(movie.imdbID);
     console.log(movie);
-    navigate(`/about/${movie.Title}`);
+    navigate(`/about/${movie.Title}/${movie.imdbID}`);
     console.log(`Clicked on movie with ID: ${movie.imdbID}`);
   };
   const filteredMovies =

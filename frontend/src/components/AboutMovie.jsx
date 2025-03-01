@@ -5,23 +5,25 @@ import Loader from "./Loader"; // Assuming you have a Loader component
 import "../assets/styles/AboutMovie.css";
 import { useOpenLink } from "../hooks/useOpenLink";
 import { FaWhatsapp, FaTelegramPlane } from "react-icons/fa";
+import { useParams } from "react-router-dom";
 
-const AboutMovie = ({ selectedMovie }) => {
+const AboutMovie = () => {
+  const { imdbID } = useParams();
   const [movieDetails, setMovieDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [watchPlatforms, setWatchPlatforms] = useState([]);
 
   useEffect(() => {
-    if (selectedMovie) {
+    if (imdbID) {
       fetchMovieDetails();
     }
-  }, [selectedMovie]);
+  }, [imdbID]);
 
   const fetchMovieDetails = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${API_URL}/api/movie_details?imdbID=${selectedMovie}`
+        `${API_URL}/api/movie_details?imdbID=${imdbID}`
       );
       setMovieDetails(response.data);
       await whereToWatch(response.data.Title);

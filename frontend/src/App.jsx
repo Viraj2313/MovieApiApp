@@ -102,7 +102,7 @@ function App() {
         />
         <Route path="/signup" element={<SignUp setUserName={setUserName} />} />
         <Route
-          path="/about/:movieName"
+          path="/about/:movieName/:imdbID"
           element={<AboutMovie selectedMovie={selectedMovie} />}
         />
         setUserId={setUserId}

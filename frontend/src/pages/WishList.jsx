@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../assets/styles/Home.css";
 import { API_URL } from "../config";
-import Loader from "./Loader";
+import Loader from "../components/Loader";
 import { triggerNotification } from "../utils/NotificationUtil";
 import { Navigate, useNavigate } from "react-router-dom";
 const WishList = ({ setSelectedMovie }) => {

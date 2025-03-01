@@ -1,7 +1,5 @@
 export const useOpenLink = () => {
-  const openLink = (url) => {
-    window.open(url, "_blank", "noopener,noreferrer");
+  return (url) => {
+    return window.open(url, "_blank");
   };
-
-  return openLink;
 };

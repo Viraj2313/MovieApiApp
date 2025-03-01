@@ -133,7 +133,7 @@ const AboutMovie = ({ selectedMovie }) => {
   };
   const ShareMovieButton = ({ movieTitle }) => {
     const [showMenu, setShowMenu] = useState(false);
-    const movieUrl = `https://yourwebsite.com/movie/${movieTitle}`;
+    const movieUrl = `https://${API_URL}/about/${movieTitle}`;
     const shareText = `Hey! Check out this movie "${movieTitle}". Here's the link: ${movieUrl}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
     const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(

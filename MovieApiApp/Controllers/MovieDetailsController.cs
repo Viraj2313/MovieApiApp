@@ -46,6 +46,15 @@ namespace WbApp.Controllers
                 return StatusCode(500, new { error = ex.Message, stackTrace = ex.StackTrace });
             }
         }
+        // [HttpGet("movie_details")]
+        // public async Task<IActionResult> GetMovieByTitle([FromQuery] string title)
+        // {
+        //     var movie = await _context.Movies.FirstOrDefaultAsync(m => m.MovieTitle == title);
+        //     if (movie == null) return NotFound("Movie not found");
 
-        }
+        //     return Ok(movie);
+
+        // }
+    }
+
 }

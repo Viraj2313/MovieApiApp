@@ -3,9 +3,9 @@ import axios from "axios";
 import "../assets/styles/Home.css";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
-import Loader from "./Loader";
+import Loader from "../components/Loader";
 import { triggerNotification } from "../utils/NotificationUtil";
-import SaveMovie from "./SaveMovie";
+import SaveMovie from "../components/SaveMovie";
 const Home = ({ setSelectedMovie, userId, setUserId }) => {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);

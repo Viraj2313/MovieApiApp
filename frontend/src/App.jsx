@@ -1,19 +1,18 @@
 import "./App.css";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Home from "./components/Home";
+import Home from "./pages/Home";
 import NavBar from "./components/NavBar";
-import SignUp from "./components/SignUp";
+import SignUp from "./pages/SignUp";
 import AboutMovie from "./components/AboutMovie";
-import Login from "./components/Login";
-import WishList from "./components/WishList";
+import Login from "./pages/Login";
+import WishList from "./pages/WishList";
 import axios from "axios";
 import { API_URL } from "./config";
 import { triggerNotification } from "./utils/NotificationUtil";
-import Friends from "./components/Friends";
+import Friends from "./pages/Friends";
 import Chat from "./components/Chat";
-import LoadingPage from "./components/LoadingPage";
-import { MantineProvider, Button } from "@mantine/core";
+import LoadingPage from "./components/LoadingSpinner";
 function App() {
   const navigate = useNavigate();
   const [user, setUserName] = useState(null);

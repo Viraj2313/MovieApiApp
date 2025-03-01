@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { API_URL } from "../config";
 import { useNavigate } from "react-router-dom";
-import Loader from "./Loader";
+import Loader from "../components/Loader";
 import { triggerNotification } from "../utils/NotificationUtil";
 
 const Login = ({ setUserName, setUserId }) => {

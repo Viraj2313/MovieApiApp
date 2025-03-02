@@ -34,7 +34,7 @@ const SaveMovie = ({ movie, userId }) => {
   return (
     <>
       <button
-        className="mt-2 border-none cursor-pointer bg-[#ff5722] text-white p-1.5 px-4 rounded-md transition-colors duration-300 ease relative z-20 hover:bg-[#e64a19]"
+        className=" border-none cursor-pointer bg-[#ff5722] text-white p-1.5 px-4 rounded-md transition-colors duration-300 ease relative z-20 hover:bg-[#e64a19]"
         onClick={() => handleSave(movie)}
       >
         Save

@@ -60,10 +60,10 @@ const WishList = ({ setSelectedMovie }) => {
         <Loader />
       ) : (
         <>
-          <div>WishList</div>
-          <ul className="movie-list grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-5 p-5">
-            {wishlist && wishlist.length > 0 ? (
-              wishlist.map((item) => (
+          <div className="text-2xl font-bold mt-5 ml-5">WishList</div>
+          {wishlist && wishlist.length > 0 ? (
+            <ul className="movie-list grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-5 p-5">
+              {wishlist.map((item) => (
                 <li
                   key={item.id}
                   className="list-none flex flex-col text-center justify-start movie relative cursor-pointer overflow-hidden shadow-[0px_1px_11px_5px_rgba(0,0,0,0.4)] after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-b after:from-transparent after:to-[rgba(0,0,0,0.7)] after:z-10 after:pointer-events-none"
@@ -87,11 +87,13 @@ const WishList = ({ setSelectedMovie }) => {
                     </button>
                   </h3>
                 </li>
-              ))
-            ) : (
-              <p>No movies in wishlist</p>
-            )}
-          </ul>
+              ))}
+            </ul>
+          ) : (
+            <div className="flex justify-center items-center w-full h-[50vh]">
+              <p className="text-xl">No movies in wishlist</p>
+            </div>
+          )}
         </>
       )}
     </>

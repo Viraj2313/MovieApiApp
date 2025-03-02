@@ -6,6 +6,7 @@ import "../assets/styles/AboutMovie.css";
 import { useOpenLink } from "../hooks/useOpenLink";
 import { FaWhatsapp, FaTelegramPlane } from "react-icons/fa";
 import { useParams } from "react-router-dom";
+import SaveMovie from "./SaveMovie";
 
 const AboutMovie = () => {
   const { imdbID } = useParams();
@@ -218,7 +219,7 @@ const AboutMovie = () => {
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3 mt-4 mb-4 sm:flex sm:justify-center sm:gap-3">
+            <div className="grid grid-cols-2 gap-3 mt-4 mb-4 md:flex md:justify-center md:gap-3">
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition cursor-pointer"
                 onClick={() => goToTrailer(movieDetails.Title)}
@@ -243,7 +244,11 @@ const AboutMovie = () => {
               >
                 Read Reviews (Rotten Tomatoes)
               </button>
-              <ShareMovieButton movieTitle={movieDetails.Title} />
+              <ShareMovieButton
+                className="min-h-full"
+                movieTitle={movieDetails.Title}
+              />
+              <SaveMovie />
             </div>
 
             <p className="text-lg text-gray-700">{movieDetails.Plot}</p>

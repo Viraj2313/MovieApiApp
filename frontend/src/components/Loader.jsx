@@ -2,20 +2,8 @@ import React from "react";
 
 const Loader = () => {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh", // Full viewport height
-        // Full viewport width
-      }}
-    >
-      <img
-        src="/spinner.gif"
-        alt="Loading..."
-        style={{ width: "150px", height: "150px" }}
-      />
+    <div className="flex justify-center items-center h-screen">
+      <img src="/spinner.gif" alt="Loading..." className="w-36 h-36" />
     </div>
   );
 };

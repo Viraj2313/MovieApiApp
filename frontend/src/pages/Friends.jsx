@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { API_URL } from "../config";
 import { triggerNotification } from "../utils/NotificationUtil";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Friends = ({ user, userId, setUserId }) => {
   const [friends, setFriends] = useState([]);
@@ -77,14 +78,14 @@ const Friends = ({ user, userId, setUserId }) => {
       getFriendRequests();
       getFriendsList();
     } catch (error) {
-      triggerNotification("Couldn't accept friend request", "error");
+      toast.error("Couldn't accept friend request");
     }
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!friendId) {
-      triggerNotification("Enter student ID first", "error");
+      toast.error("Enter student ID first");
       return;
     }
     try {
@@ -94,10 +95,10 @@ const Friends = ({ user, userId, setUserId }) => {
       if (response.status === 200) {
         setFriend(response.data);
         setFriendFound(true);
-        triggerNotification("Friend found", "success");
+        toast.success("Friend found");
       }
     } catch (error) {
-      triggerNotification("Friend not found", "error");
+      toast.error("Friend not found");
     }
   };
 
@@ -108,9 +109,9 @@ const Friends = ({ user, userId, setUserId }) => {
       });
       setFriendFound(false);
       setFriend({});
-      triggerNotification("Friend request sent!", "success");
+      toast.success("Friend request sent!");
     } catch (error) {
-      triggerNotification("Friend request not sent", "error");
+      toast.error("Friend request not sent");
     }
   };
 

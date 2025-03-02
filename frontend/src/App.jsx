@@ -4,15 +4,20 @@ import { useEffect, useState } from "react";
 import Home from "./pages/Home";
 import NavBar from "./components/NavBar";
 import SignUp from "./pages/SignUp";
-import AboutMovie from "./components/AboutMovie";
+import AboutMovie from "./pages/AboutMovie";
 import Login from "./pages/Login";
 import WishList from "./pages/WishList";
 import axios from "axios";
 import { API_URL } from "./config";
 import { triggerNotification } from "./utils/NotificationUtil";
 import Friends from "./pages/Friends";
-import Chat from "./components/Chat";
+import Chat from "./pages/Chat";
 import LoadingPage from "./components/LoadingSpinner";
+import FriendsToShare from "./pages/FriendsToShare";
+import { UserProvider } from "./context/UserContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 function App() {
   const navigate = useNavigate();
   const [user, setUserName] = useState(null);
@@ -66,58 +71,66 @@ function App() {
           withCredentials: true,
         }
       );
-      triggerNotification("Logout success", "error");
+      toast.success("Logout success");
       setUserId(null);
       setUserName(null);
       navigate("/");
     } catch (error) {
-      triggerNotification("Logout failed, please try again", "error");
+      triggerNotification();
+      toast.error("Logout failed, please try again");
       console.log("Logout failed", error.response?.data || error.message);
     }
   };
   return (
     <>
-      <NavBar
-        user={user}
-        setUserName={setUserName}
-        setUserId={setUserId}
-        handleLogout={handleLogout}
-        userId={userId}
-      />
-      <Routes>
-        <Route
-          path="/wishlist"
-          element={<WishList setSelectedMovie={setSelectedMovie} />}
-        ></Route>
-        <Route
-          path="/"
-          element={
-            <Home
-              setSelectedMovie={setSelectedMovie}
-              setUserId={setUserId}
-              userId={userId}
-            />
-          }
+      <UserProvider>
+        <NavBar
+          user={user}
+          setUserName={setUserName}
+          setUserId={setUserId}
+          handleLogout={handleLogout}
+          userId={userId}
         />
-        <Route path="/signup" element={<SignUp setUserName={setUserName} />} />
-        <Route
-          path="/about/:movieName/:imdbID"
-          element={<AboutMovie selectedMovie={selectedMovie} />}
-        />
-        setUserId={setUserId}
-        <Route
-          path="/login"
-          element={<Login setUserName={setUserName} setUserId={setUserId} />}
-        />
-        <Route
-          path="/friends"
-          element={
-            <Friends user={user} userId={userId} setUserId={setUserId} />
-          }
-        />
-        <Route path="/chatHub" element={<Chat />} />
-        <Route path="/loading" element={<LoadingPage />} />
-      </Routes>
+        <ToastContainer />
+        <Routes>
+          <Route
+            path="/wishlist"
+            element={<WishList setSelectedMovie={setSelectedMovie} />}
+          ></Route>
+          <Route
+            path="/"
+            element={
+              <Home
+                setSelectedMovie={setSelectedMovie}
+                setUserId={setUserId}
+                userId={userId}
+              />
+            }
+          />
+          <Route
+            path="/signup"
+            element={<SignUp setUserName={setUserName} />}
+          />
+          <Route
+            path="/about/:movieName/:imdbID"
+            element={<AboutMovie selectedMovie={selectedMovie} />}
+          />
+          setUserId={setUserId}
+          <Route
+            path="/login"
+            element={<Login setUserName={setUserName} setUserId={setUserId} />}
+          />
+          <Route
+            path="/friends"
+            element={
+              <Friends user={user} userId={userId} setUserId={setUserId} />
+            }
+          />
+          <Route path="/chatHub" element={<Chat />} />
+          <Route path="/loading" element={<LoadingPage />} />
+          <Route path="/friendstoshare" element={<FriendsToShare />} />
+        </Routes>
+      </UserProvider>
     </>
   );
 }

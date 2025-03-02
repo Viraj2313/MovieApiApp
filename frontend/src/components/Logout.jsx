@@ -2,14 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../config";
+import { toast } from "react-toastify";
 
 const Logout = ({ handleLogout }) => {
-  const navigate = useNavigate();
-
   return (
     <button
-      style={{ backgroundColor: "#ff5722" }}
-      className="h-10 my-4 rounded-xs text-white w-15 cursor-pointer"
+      className="h-12 my-4 rounded-2xl text-white cursor-pointer bg-gradient-to-r from-red-500 to-orange-500 hover:from-orange-500 hover:to-red-500 transition-all duration-300 shadow-lg transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-orange-400 sm:w-32 w-full"
       onClick={handleLogout}
     >
       Log out

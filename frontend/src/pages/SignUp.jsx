@@ -3,7 +3,7 @@ import axios from "axios";
 import { API_URL } from "../config";
 import { Link, useNavigate } from "react-router-dom";
 import { triggerNotification } from "../utils/NotificationUtil";
-
+import { toast } from "react-toastify";
 const SignUp = ({ setUserName }) => {
   const navigate = useNavigate();
   const [user, setUserState] = useState({
@@ -21,7 +21,7 @@ const SignUp = ({ setUserName }) => {
 
       if (response.status === 200) {
         setUserName(user.name);
-        triggerNotification("Signed Up Successfully", "success");
+        toast.success("Signed Up Successfully");
         setUserState({ name: "", email: "", password: "" });
         navigate("/");
       }

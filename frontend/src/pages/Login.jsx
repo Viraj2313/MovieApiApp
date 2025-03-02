@@ -4,7 +4,7 @@ import { API_URL } from "../config";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import { triggerNotification } from "../utils/NotificationUtil";
-
+import { toast } from "react-toastify";
 const Login = ({ setUserName, setUserId }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState({ email: "", password: "" });
@@ -18,7 +18,8 @@ const Login = ({ setUserName, setUserId }) => {
         withCredentials: true,
       });
       if (response.status === 200) {
-        triggerNotification("Login success", "success");
+        // triggerNotification("Login success", "success");
+        toast.success("Login Success");
         setUserName(response.data.userName);
         setUserId(response.data.userId);
         setUser({ email: "", password: "" });

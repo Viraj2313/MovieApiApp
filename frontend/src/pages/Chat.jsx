@@ -3,9 +3,11 @@ import { useLocation } from "react-router-dom";
 import * as signalR from "@microsoft/signalr";
 import { API_URL } from "../config";
 import axios from "axios";
-import Loader from "./Loader";
-
+import Loader from "../components/Loader";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 const Chat = () => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [connection, setConnection] = useState(null);

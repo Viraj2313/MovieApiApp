@@ -8,8 +8,7 @@ const ShareMovieButton = ({ movieTitle, API_URL }) => {
   const navigate = useNavigate();
   const menuRef = useRef();
   const buttonRef = useRef();
-
-  const movieUrl = `https://${API_URL}/about/${movieTitle}`;
+  const movieUrl = window.location.href;
   const shareText = `Hey! Check out this movie "${movieTitle}". Here's the link: ${movieUrl}`;
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(

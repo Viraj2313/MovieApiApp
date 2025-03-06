@@ -128,51 +128,6 @@ const AboutMovie = () => {
       console.error("Failed to get Rotten Tomatoes URL:", error);
     }
   };
-<<<<<<< HEAD:frontend/src/components/AboutMovie.jsx
-  const ShareMovieButton = ({ movieTitle }) => {
-    const [showMenu, setShowMenu] = useState(false);
-    const movieUrl = window.location.href;
-    const shareText = `Hey! Check out this movie "${movieTitle}". Here's the link: ${movieUrl}`;
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(
-      movieUrl
-    )}&text=${encodeURIComponent(shareText)}`;
-
-    const openLink = (url) => {
-      window.open(url, "_blank");
-      setShowMenu(false);
-    };
-
-    return (
-      <div className="relative inline-block text-center">
-        <button
-          className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition cursor-pointer shadow-md"
-          onClick={() => setShowMenu(!showMenu)}
-        >
-          Share with Friends
-        </button>
-        {showMenu && (
-          <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl ring-1 ring-black ring-opacity-5 z-10 overflow-hidden animate-fade-in">
-            <button
-              onClick={() => openLink(whatsappUrl)}
-              className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-100 transition w-full"
-            >
-              <FaWhatsapp className="text-green-500" /> Share on WhatsApp
-            </button>
-            <button
-              onClick={() => openLink(telegramUrl)}
-              className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-blue-100 transition w-full"
-            >
-              <FaTelegramPlane className="text-blue-500" /> Share on Telegram
-            </button>
-          </div>
-        )}
-      </div>
-    );
-  };
-=======
->>>>>>> cef4a1d94aaf0a1c4fd373b222542fa2de38e071:frontend/src/pages/AboutMovie.jsx
-
   return (
     <div className="max-w-screen-lg mx-auto p-4">
       {loading ? (

@@ -1,13 +1,12 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { API_URL } from "../config";
-import Loader from "./Loader"; // Assuming you have a Loader component
+import Loader from "../components/Loader";
 import "../assets/styles/AboutMovie.css";
 import { useOpenLink } from "../hooks/useOpenLink";
-import { FaWhatsapp, FaTelegramPlane } from "react-icons/fa";
-import { useParams } from "react-router-dom";
-import SaveMovie from "./SaveMovie";
-
+import { useNavigate, useParams } from "react-router-dom";
+import SaveMovie from "../components/SaveMovie";
+import ShareMovieButton from "../components/ShareMovieButton";
 const AboutMovie = () => {
   const { imdbID } = useParams();
   const [movieDetails, setMovieDetails] = useState(null);
@@ -37,13 +36,12 @@ const AboutMovie = () => {
 
   const goToTrailer = async (movieTitle) => {
     const openLink = useOpenLink();
-    const text = `Just give a url for the youtube trailer of this movie ${movieTitle} dont give any other text with it`;
 
     const newTab = openLink(`/loading`, "_blank");
 
     try {
-      const response = await axios.post(`${API_URL}/api/gemini/ask`, {
-        prompt: text,
+      const response = await axios.post(`${API_URL}/api/get-trailer-url`, {
+        movieTitle: movieTitle,
       });
       const youtubeUrl = response.data;
 
@@ -58,11 +56,10 @@ const AboutMovie = () => {
 
   const goToImdb = async (movieTitle) => {
     const openLink = useOpenLink();
-    const text = `Just give a url for imdb page of this movie ${movieTitle} dont give any other text with it`;
     const newTab = openLink("/loading", "_blank");
     try {
-      const response = await axios.post(`${API_URL}/api/gemini/ask`, {
-        prompt: text,
+      const response = await axios.post(`${API_URL}/api/get-imdb-url`, {
+        movieTitle: movieTitle,
       });
       const imdbUrl = response.data;
       if (imdbUrl && newTab) {
@@ -75,10 +72,9 @@ const AboutMovie = () => {
   };
 
   const whereToWatch = async (movieTitle) => {
-    const text = `where to watch ${movieTitle} just give array nothing else`;
     try {
-      const response = await axios.post(`${API_URL}/api/gemini/ask`, {
-        prompt: text,
+      const response = await axios.post(`${API_URL}/api/where-to-watch`, {
+        movieTitle: movieTitle,
       });
 
       if (Array.isArray(response.data)) {
@@ -93,12 +89,11 @@ const AboutMovie = () => {
   };
 
   const goToWiki = async (movieTitle) => {
-    const text = `just give wikipedia url for the movie ${movieTitle}`;
     const openLink = useOpenLink();
     const newTab = openLink("/loading", "_blank");
     try {
-      const response = await axios.post(`${API_URL}/api/gemini/ask`, {
-        prompt: text,
+      const response = await axios.post(`${API_URL}/api/get-wiki-url`, {
+        movieTitle: movieTitle,
       });
       console.log(response.data);
       const wikiUrl = response.data;
@@ -114,13 +109,12 @@ const AboutMovie = () => {
   };
 
   const getReviews = async (movieTitle) => {
-    const text = `Just give Rotten Tomatoes url for the movie ${movieTitle} nothing else`;
     const openLink = useOpenLink();
     const newTab = openLink("/loading", "_blank");
 
     try {
-      const response = await axios.post(`${API_URL}/api/gemini/ask`, {
-        prompt: text,
+      const response = await axios.post(`${API_URL}/api/get-reviews-url`, {
+        movieTitle: movieTitle,
       });
       console.log(response.data);
       const reviewUrl = response.data;
@@ -134,6 +128,7 @@ const AboutMovie = () => {
       console.error("Failed to get Rotten Tomatoes URL:", error);
     }
   };
+<<<<<<< HEAD:frontend/src/components/AboutMovie.jsx
   const ShareMovieButton = ({ movieTitle }) => {
     const [showMenu, setShowMenu] = useState(false);
     const movieUrl = window.location.href;
@@ -175,6 +170,8 @@ const AboutMovie = () => {
       </div>
     );
   };
+=======
+>>>>>>> cef4a1d94aaf0a1c4fd373b222542fa2de38e071:frontend/src/pages/AboutMovie.jsx
 
   return (
     <div className="max-w-screen-lg mx-auto p-4">

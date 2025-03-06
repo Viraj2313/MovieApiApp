@@ -36,12 +36,16 @@ const NavBar = ({ user, setUserName, setUserId, handleLogout, userId }) => {
         ) : (
           <div className="flex gap-2">
             <Link to={"/login"}>
-              <button className="px-4 py-2 bg-orange-500 text-white text-sm  rounded-md hover:bg-orange-700 transition-colors max-w-20 cursor-pointer">
+              <button className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600 text-white text-sm font-medium rounded-md shadow-md hover:from-orange-500 hover:to-orange-700 transition-all duration-300 ease-in-out transform hover:scale-105 cursor-pointer">
                 Login
               </button>
             </Link>
             <Link to={"/signup"}>
+<<<<<<< HEAD
               <button className="px-0 py-2 bg-orange-500 text-white text-sm rounded-md hover:bg-orange-700 transition-colors sm:max-w-21 cursor-pointer max-h-[36px] max-w-[70px]">
+=======
+              <button className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600 text-white text-sm font-medium rounded-md shadow-md hover:from-orange-500 hover:to-orange-700 transition-all duration-300 ease-in-out transform hover:scale-105 cursor-pointer">
+>>>>>>> cef4a1d94aaf0a1c4fd373b222542fa2de38e071
                 Sign Up
               </button>
             </Link>

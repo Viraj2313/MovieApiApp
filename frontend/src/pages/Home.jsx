@@ -44,33 +44,6 @@ const Home = ({ setSelectedMovie, userId, setUserId }) => {
       });
   }, []);
 
-  // const handleSave = async (movie) => {
-  //   try {
-  //     if (!userId) {
-  //       triggerNotification("You need to login first", "error");
-  //       return;
-  //     }
-
-  //     const moviesToSave = {
-  //       userId: userId,
-  //       movieTitle: movie.Title,
-  //       movieId: movie.imdbID,
-  //       moviePoster: movie.Poster,
-  //     };
-  //     console.log(moviesToSave);
-  //     const response = await axios.post(
-  //       `${API_URL}/api/add_wishlist`,
-  //       moviesToSave,
-  //       { withCredentials: true }
-  //     );
-  //     if (response.status == 200) {
-  //       triggerNotification("Movie added to wishlist", "success");
-  //     }
-  //   } catch (error) {
-  //     triggerNotification(response.data.error);
-  //     console.log(error);
-  //   }
-  // };
   const handleClick = (movie) => {
     setSelectedMovie(movie.imdbID);
     console.log(movie);

@@ -36,7 +36,6 @@ const NavBar = ({ user, setUserName, setUserId, handleLogout, userId }) => {
           </>
         ) : (
           <div className="flex gap-2">
-            <Button>hello</Button>
             <Link to={"/login"}>
               <button className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600 text-white text-sm font-medium rounded-md shadow-md hover:from-orange-500 hover:to-orange-700 transition-all duration-300 ease-in-out transform hover:scale-105 cursor-pointer">
                 Login

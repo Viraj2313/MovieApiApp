@@ -7,7 +7,7 @@ import Loader from "../components/Loader";
 import { triggerNotification } from "../utils/NotificationUtil";
 import SaveMovie from "../components/SaveMovie";
 import { useUser } from "../context/UserContext";
-
+import { Button } from "@/components/ui/button";
 const Home = ({ setSelectedMovie }) => {
   const { userId, setUserId } = useUser();
   const [movies, setMovies] = useState([]);

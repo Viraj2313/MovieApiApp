@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import { API_URL } from "../config";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useUser } from "../context/UserContext";
 
-const Login = ({ setUserName, setUserId }) => {
+const Login = ({ setUserName }) => {
+  const { userId, setUserId } = useUser();
   const navigate = useNavigate();
   const [user, setUser] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);

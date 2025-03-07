@@ -15,6 +15,7 @@ const SignUp = ({ setUserName }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      navigate("/loading");
       const response = await axios.post(`${API_URL}/api/register`, user, {
         withCredentials: true,
       });
@@ -27,6 +28,8 @@ const SignUp = ({ setUserName }) => {
       }
     } catch (error) {
       triggerNotification("Signup failed", "error");
+      toast.error("Signup failed");
+      navigate("/signup");
     }
   };
 

@@ -6,7 +6,8 @@ import { API_URL } from "../config";
 import Loader from "../components/Loader";
 import { triggerNotification } from "../utils/NotificationUtil";
 import SaveMovie from "../components/SaveMovie";
-const Home = ({ setSelectedMovie, userId, setUserId }) => {
+const Home = ({ setSelectedMovie }) => {
+  const { userId, setUserId } = useUser();
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);

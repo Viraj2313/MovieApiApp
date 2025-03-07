@@ -4,8 +4,9 @@ import { API_URL } from "../config";
 import { triggerNotification } from "../utils/NotificationUtil";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-
-const Friends = ({ user, userId, setUserId }) => {
+import { useUser } from "../context/UserContext";
+const Friends = ({ user }) => {
+  const { userId, setUserId } = useUser();
   const [friends, setFriends] = useState([]);
   const [friendId, setFriendId] = useState("");
   const [friend, setFriend] = useState({});
@@ -137,7 +138,7 @@ const Friends = ({ user, userId, setUserId }) => {
                     {friend.friendName}
                   </Link>
                 ))
-              ) : { loading } ? (
+              ) : loading ? (
                 <Loader />
               ) : (
                 <p className="text-gray-500">No friends added yet.</p>

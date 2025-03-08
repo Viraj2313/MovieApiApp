@@ -9,15 +9,13 @@ import os
 # Load config
 def load_config():
     config = {}
-    
-    # Try loading config.json, but continue if it doesn't exist
     try:
         with open('config.json', 'r') as file:
             config = json.load(file)
     except FileNotFoundError:
         print("Warning: config.json not found. Using environment variables.")
 
-    # Override with environment variables if they exist
+    # Override with environment variables 
     config["API_URL"] = os.getenv("API_URL", config.get("API_URL"))
     config["API_KEY"] = os.getenv("API_KEY", config.get("API_KEY"))
 
@@ -56,8 +54,8 @@ async def fetch_movie_details(movie_id):
         return {
             "id": movie_id,
             "title": data.get("Title"),
-            "plot": data.get("Plot", ""),  # Ensure plot is never None
-            "poster": data.get("Poster", "")  # Ensure poster is never None
+            "plot": data.get("Plot", ""), 
+            "poster": data.get("Poster", "")  
         }
     else:
         return None
@@ -100,12 +98,17 @@ async def recommend(user_id):
     
     all_plots = liked_plots + home_plots
     
+    #vectorizes the plots of the movies to be able to compare the similarity between the liked movies and the home movies
     vectorizer = TfidfVectorizer(stop_words='english')
+
+    #creates a matrix of the plots of the movies
     tfidf_matrix = vectorizer.fit_transform(all_plots)
-    
+    print(tfidf_matrix)
+    #compares the cosine similarity between the liked movies and the home movies the cosine similiarity returns the similarity score 
+    # between the two movies
     cosine_sim = cosine_similarity(tfidf_matrix[:len(liked_plots)], tfidf_matrix[len(liked_plots):])
-    
     recommendations = []
+    #sorts the movies based on the similarity score and returns the top 5 similar movies
     for i, similarities in enumerate(cosine_sim):
         similar_movies = sorted(list(enumerate(similarities)), key=lambda x: x[1], reverse=True)[:5]
         recommendations += [{
@@ -113,9 +116,9 @@ async def recommend(user_id):
             "imdbID": home_movie_dict[home_titles[movie[0]]]["id"],
             "poster": home_movie_dict[home_titles[movie[0]]]["poster"]
         } for movie in similar_movies]
-    
+    #removes duplicates from the recommendations
     recommendations = list({movie["imdbID"]: movie for movie in recommendations}.values())  # Remove duplicates
     
     return jsonify({"Recommendations": recommendations})
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.getenv("PORT", 8080)))
+    app.run(debug=True, port=5001)

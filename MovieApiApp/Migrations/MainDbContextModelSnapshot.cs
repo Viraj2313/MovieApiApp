@@ -125,6 +125,32 @@ namespace MovieApiApp.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("WbApp.Models.UserLike", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("Liked")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("MovieId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserLikes");
+                });
+
             modelBuilder.Entity("WbApp.Models.WishList", b =>
                 {
                     b.Property<int>("Id")

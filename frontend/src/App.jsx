@@ -18,6 +18,7 @@ import { UserProvider } from "./context/UserContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
+import Recommendations from "./pages/Recommendations";
 function App() {
   const navigate = useNavigate();
   const [user, setUserName] = useState(null);
@@ -129,6 +130,10 @@ function App() {
           <Route path="/chatHub" element={<Chat />} />
           <Route path="/loading" element={<LoadingPage />} />
           <Route path="/friendstoshare" element={<FriendsToShare />} />
+          <Route
+            path="/recommendations"
+            element={<Recommendations setSelectedMovie={setSelectedMovie} />}
+          />
         </Routes>
       </UserProvider>
     </>

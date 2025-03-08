@@ -7,6 +7,7 @@ import { useOpenLink } from "../hooks/useOpenLink";
 import { useNavigate, useParams } from "react-router-dom";
 import SaveMovie from "../components/SaveMovie";
 import ShareMovieButton from "../components/ShareMovieButton";
+import LikeMovie from "../components/LikeMovie";
 const AboutMovie = () => {
   const { imdbID } = useParams();
   const [movieDetails, setMovieDetails] = useState(null);
@@ -204,6 +205,9 @@ const AboutMovie = () => {
             </div>
 
             <p className="text-lg text-gray-700">{movieDetails.Plot}</p>
+          </div>
+          <div>
+            <LikeMovie movieId={movieDetails.imdbID} />
           </div>
         </div>
       ) : (

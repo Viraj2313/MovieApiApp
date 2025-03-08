@@ -1,4 +1,4 @@
-Flask
+flask
 aiohttp
 scikit-learn
 flask-cors

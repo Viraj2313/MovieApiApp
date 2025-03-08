@@ -8,15 +8,25 @@ import os
 
 # Load config
 def load_config():
-    with open('config.json', 'r') as file:
-        config = json.load(file)
-    config["API_URL"] = os.getenv("API_URL", config["API_URL"])
-    config["API_KEY"] = os.getenv("API_KEY", config["API_KEY"])
+    config = {}
+    
+    # Try loading config.json, but continue if it doesn't exist
+    try:
+        with open('config.json', 'r') as file:
+            config = json.load(file)
+    except FileNotFoundError:
+        print("Warning: config.json not found. Using environment variables.")
+
+    # Override with environment variables if they exist
+    config["API_URL"] = os.getenv("API_URL", config.get("API_URL"))
+    config["API_KEY"] = os.getenv("API_KEY", config.get("API_KEY"))
+
     return config
 
 config = load_config()
 API_KEY = config["API_KEY"]
 API_URL = config["API_URL"]
+
 
 app = Flask(__name__)
 CORS(app)

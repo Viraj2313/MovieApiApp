@@ -107,6 +107,5 @@ async def recommend(user_id):
     recommendations = list({movie["imdbID"]: movie for movie in recommendations}.values())  # Remove duplicates
     
     return jsonify({"Recommendations": recommendations})
-
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(host='0.0.0.0', port=int(os.getenv("PORT", 5001)))

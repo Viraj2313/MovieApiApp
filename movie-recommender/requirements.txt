@@ -1,4 +1,5 @@
-Flask
+flask
+flask-cors
 aiohttp
 scikit-learn
-flask-cors
+numpy

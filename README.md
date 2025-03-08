@@ -6,14 +6,15 @@ Welcome to **Movie Pedia**, a dynamic web application where users can explore mo
 
 ```
 ├─ MovieApiApp/   # ASP.NET Core API
-│  ├─ src/        # API code
-│  ├─ tests/      # Unit tests
+│  ├─ MovieApiApp/# API code
 │  └─ README.md   # Backend-specific information
 ├─ frontend/      # React app
 │  ├─ src/        # React components and logic
 │  ├─ public/     # Static files
 │  ├─ tests/      # Frontend tests
 │  └─ README.md   # Frontend-specific information
+├─ movie-recommender/
+|  ├─ app.py      # Movie recommendation (Machine Learning script)
 ├─ .github/       # CI/CD workflows
 ├─ .gitignore     # Git ignore rules
 └─ README.md      # Project overview

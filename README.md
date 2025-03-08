@@ -43,7 +43,7 @@ Welcome to **Movie Pedia**, a dynamic web application where users can explore mo
 - 🔐 Secure JWT-based authentication
 - ⚡ Context API-based global state management
 - 🌐 Cross-domain cookie support
-
+- Movie recommendation through machine learning based on user’s preferences
 ## 🚀 Installation
 
 ### Backend Setup

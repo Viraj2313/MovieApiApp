@@ -1,0 +1,112 @@
+from flask import Flask, jsonify
+import aiohttp
+from flask_cors import CORS
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import json
+import os
+
+# Load config
+def load_config():
+    with open('config.json', 'r') as file:
+        config = json.load(file)
+    config["API_URL"] = os.getenv("API_URL", config["API_URL"])
+    config["API_KEY"] = os.getenv("API_KEY", config["API_KEY"])
+    return config
+
+config = load_config()
+API_KEY = config["API_KEY"]
+API_URL = config["API_URL"]
+
+app = Flask(__name__)
+CORS(app)
+# Fetch liked movies from .NET API
+async def fetch_liked_movies(user_id):
+    url = f'{API_URL}/api/liked/{user_id}'
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            movie_ids = await response.json()
+    
+    movie_data = []
+    for movie_id in movie_ids:
+        movie_details = await fetch_movie_details(movie_id)
+        if movie_details:
+            movie_data.append(movie_details)
+    
+    return movie_data
+
+# Fetch movie details from OMDB API
+async def fetch_movie_details(movie_id):
+    api_url = f"http://www.omdbapi.com/?i={movie_id}&apikey={API_KEY}"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(api_url) as response:
+            data = await response.json()
+    
+    if data.get("Response") == "True" and data.get("Plot"):
+        return {
+            "id": movie_id,
+            "title": data.get("Title"),
+            "plot": data.get("Plot", ""),  # Ensure plot is never None
+            "poster": data.get("Poster", "")  # Ensure poster is never None
+        }
+    else:
+        return None
+
+# Fetch home movies from .NET API
+async def fetch_movies():
+    url = f"{API_URL}/api/Home"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            if response.status == 200:
+                data = await response.json()
+                movie_data = []
+                for movie in data:
+                    movie_details = await fetch_movie_details(movie.get('imdbID'))
+                    if movie_details:
+                        movie_data.append(movie_details)
+                return movie_data
+    return []
+
+@app.route('/recommend/<user_id>', methods=['GET'])
+async def recommend(user_id):
+    liked_movies = await fetch_liked_movies(user_id)
+    if not liked_movies:
+        return jsonify({"Recommendations": []})
+    
+    liked_plots = [movie['plot'] for movie in liked_movies if 'plot' in movie]
+    liked_titles = [movie['title'] for movie in liked_movies if 'title' in movie]
+    
+    if not liked_plots:
+        return jsonify({"Recommendations": []})
+    
+    home_movies = await fetch_movies()
+    home_movie_dict = {movie['title']: {"id": movie['id'], "poster": movie['poster']} for movie in home_movies if 'title' in movie and 'plot' in movie}
+    
+    home_titles = list(home_movie_dict.keys())
+    home_plots = [movie['plot'] for movie in home_movies if 'plot' in movie]
+    
+    if not home_plots:
+        return jsonify({"Recommendations": []})
+    
+    all_plots = liked_plots + home_plots
+    
+    vectorizer = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = vectorizer.fit_transform(all_plots)
+    
+    cosine_sim = cosine_similarity(tfidf_matrix[:len(liked_plots)], tfidf_matrix[len(liked_plots):])
+    
+    recommendations = []
+    for i, similarities in enumerate(cosine_sim):
+        similar_movies = sorted(list(enumerate(similarities)), key=lambda x: x[1], reverse=True)[:5]
+        recommendations += [{
+            "title": home_titles[movie[0]],
+            "imdbID": home_movie_dict[home_titles[movie[0]]]["id"],
+            "poster": home_movie_dict[home_titles[movie[0]]]["poster"]
+        } for movie in similar_movies]
+    
+    recommendations = list({movie["imdbID"]: movie for movie in recommendations}.values())  # Remove duplicates
+    
+    return jsonify({"Recommendations": recommendations})
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5001)

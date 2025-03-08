@@ -1,0 +1,57 @@
+import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { Button } from "./ui/button";
+import { API_URL } from "../config";
+import { useUser } from "@/context/UserContext";
+const LikeMovie = ({ movieId }) => {
+  const { userId, setUserId } = useUser();
+  const [liked, setLiked] = useState(null);
+  const handleLike = async (value) => {
+    if (userId === null) {
+      toast.error("Please login to like movies");
+      return;
+    }
+    setLiked(value);
+    try {
+      console.log(movieId);
+      const response = await axios.post(`${API_URL}/api/user-likes`, {
+        userId: parseInt(userId),
+        movieId: String(movieId),
+        liked: value,
+      });
+      if (response.status === 200) {
+        toast.success("Movie liked succesfully");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Unable to like movie");
+    }
+  };
+  return (
+    <>
+      <div>
+        <div className="mb-2">Do you like this Movie?</div>
+        <div className="flex gap-3">
+          <Button
+            onClick={() => {
+              handleLike(true);
+            }}
+            className="cursor-pointer"
+          >
+            Yes
+          </Button>
+          <Button
+            onClick={() => {
+              handleLike(false);
+            }}
+            className="cursor-pointer"
+          >
+            No
+          </Button>
+        </div>
+      </div>
+    </>
+  );
+};
+export default LikeMovie;

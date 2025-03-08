@@ -1,0 +1,23 @@
+# Step 1: Use the official .NET 8 SDK image to build the app
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
+
+# Copy the .csproj file and restore any dependencies (via dotnet restore)
+COPY ["MovieApiApp/MovieApiApp.csproj", "MovieApiApp/"]
+RUN dotnet restore "MovieApiApp/MovieApiApp.csproj"
+
+# Copy the remaining files and build the application
+COPY . . 
+WORKDIR "/app/MovieApiApp"
+RUN dotnet publish -c Release -o /app/publish
+
+# Step 2: Use the .NET 8 runtime image for running the app (smaller final image)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+# Copy the published app from the build stage
+COPY --from=build /app/publish .
+
+# Set the entry point for the application
+ENTRYPOINT ["dotnet", "MovieApiApp.dll"]

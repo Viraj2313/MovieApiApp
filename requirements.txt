@@ -3,3 +3,4 @@ flask-cors
 scikit-learn
 aiohttp
 numpy
+gunicorn

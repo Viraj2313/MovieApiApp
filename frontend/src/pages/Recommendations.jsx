@@ -1,7 +1,7 @@
 import { useUser } from "@/context/UserContext";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { PY_API_URL } from "@/config";
+import { PY_API_URL } from "../config";
 import LoadingPage from "@/components/LoadingSpinner";
 import SaveMovie from "../components/SaveMovie";
 import { useNavigate } from "react-router-dom";
@@ -15,8 +15,6 @@ const Recommendations = ({ setSelectedMovie }) => {
 
     const fetchRecommendations = async () => {
       try {
-        console.log(PY_API_URL);
-
         const response = await axios.get(`${PY_API_URL}/recommend/${userId}`);
         setRecommendations(response.data.Recommendations);
       } catch (error) {

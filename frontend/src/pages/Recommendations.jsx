@@ -15,6 +15,8 @@ const Recommendations = ({ setSelectedMovie }) => {
 
     const fetchRecommendations = async () => {
       try {
+        console.log(PY_API_URL);
+
         const response = await axios.get(`${PY_API_URL}/recommend/${userId}`);
         setRecommendations(response.data.Recommendations);
       } catch (error) {

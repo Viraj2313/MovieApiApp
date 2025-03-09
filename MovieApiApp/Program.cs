@@ -78,7 +78,8 @@ builder.Services.AddCors(options =>
     {
         builder.WithOrigins(
                 "http://localhost:5174",
-                "https://white-bush-0f005461e.4.azurestaticapps.net", "https://moviepedia-p9bf.onrender.com")
+                "https://white-bush-0f005461e.4.azurestaticapps.net", "https://moviepedia-p9bf.onrender.com",
+            "https://pybackend-zo39.onrender.com")
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();

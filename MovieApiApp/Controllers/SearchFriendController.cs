@@ -100,12 +100,6 @@ namespace MovieApiApp.Controllers
             return Ok(new { Message = "Friend request sent successfully.", FriendRequest = friendRequest });
         }
 
-        //[HttpGet("get-friend-requests")]
-        //public async Task<IActionResult> GetFriendRequestsList([FromQuery] int userId)
-        //{
-        //    var friends = await _context.FriendRequests.Where(u => u.ReceiverId == userId).ToListAsync();
-        //    return Ok(friends);
-        //}
         [HttpGet("get-friend-requests")]
         public async Task<IActionResult> GetFriendRequestsList([FromQuery] int userId)
         {

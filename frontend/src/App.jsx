@@ -12,7 +12,7 @@ import { API_URL } from "./config";
 import { triggerNotification } from "./utils/NotificationUtil";
 import Friends from "./pages/Friends";
 import Chat from "./pages/Chat";
-import LoadingPage from "./components/LoadingSpinner";
+import LoadingPage from "./components/LoadingPage";
 import FriendsToShare from "./pages/FriendsToShare";
 import { UserProvider } from "./context/UserContext";
 import { ToastContainer } from "react-toastify";

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieApiApp.Helpers;
 using System.Diagnostics;
-using System.Security.Claims; // <-- Add this
+using System.Security.Claims;
 using WbApp.Data;
 using WbApp.Dto;
 using WbApp.Models;
@@ -54,7 +54,7 @@ namespace WbApp.Controllers
             var userId = HttpContext.GetUserIdFromToken();
             if (userId == 0)
             {
-                return Unauthorized( new {messge="User Not found"});
+                return Unauthorized(new { messge = "User Not found" });
             }
             var wishlistItem = await _context.Wishlists
                 .FirstOrDefaultAsync(w => w.MovieId == movieDel.MovieId && w.UserId == userId);

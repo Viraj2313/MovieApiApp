@@ -27,7 +27,7 @@ function App() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/user`, {
+        const response = await axios.get(`/api/user`, {
           withCredentials: true,
         });
 
@@ -48,7 +48,7 @@ function App() {
 
   const checkSessionExpiration = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/check-session`, {
+      const response = await axios.get(`/api/check-session`, {
         withCredentials: true,
       });
 
@@ -65,7 +65,7 @@ function App() {
   const handleLogout = async () => {
     try {
       const response = await axios.post(
-        `${API_URL}/api/logout`,
+        `/api/logout`,
         {},
         {
           withCredentials: true,

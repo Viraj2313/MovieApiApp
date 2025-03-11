@@ -18,7 +18,7 @@ const Home = ({ setSelectedMovie }) => {
 
   const getUserIdFromToken = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/get-user-id`, {
+      const response = await axios.get(`/api/get-user-id`, {
         withCredentials: true,
       });
       if (response.status === 200) {
@@ -34,7 +34,7 @@ const Home = ({ setSelectedMovie }) => {
     setLoading(true);
     getUserIdFromToken();
     axios
-      .get(`${API_URL}/api/home`)
+      .get(`/api/home`)
       .then((response) => {
         const movieData = response.data;
         setMovies(movieData);

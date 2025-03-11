@@ -29,7 +29,7 @@ RUN rm -rf ./*
 COPY --from=builder /app/build .
 
 # Copy custom Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/nginx.conf
 
 # Expose port 80
 EXPOSE 80

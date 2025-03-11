@@ -3,7 +3,6 @@ import { getUserIdFromToken } from "../utils/GetUserIdFromToken";
 import { useUser } from "../context/UserContext";
 import Loader from "../components/Loader";
 import axios from "axios";
-import { API_URL } from "../config";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as signalR from "@microsoft/signalr";
 import { toast } from "react-toastify";
@@ -35,7 +34,7 @@ const FriendsToShare = () => {
 
       //signalr connection
       const newConnection = new signalR.HubConnectionBuilder()
-        .withUrl(`${API_URL}/chatHub?senderId=${userId}`)
+        .withUrl(`/chatHub?senderId=${userId}`)
         .withAutomaticReconnect()
         .build();
 
@@ -51,12 +50,9 @@ const FriendsToShare = () => {
 
   const getFriendsList = async () => {
     try {
-      const response = await axios.get(
-        `${API_URL}/api/friends/get-friends-list`,
-        {
-          params: { userId },
-        }
-      );
+      const response = await axios.get(`/api/friends/get-friends-list`, {
+        params: { userId },
+      });
       if (response.status === 200) {
         setLoading(false);
         setFriends(response.data);

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Button } from "./ui/button";
-import { API_URL } from "../config";
 import { useUser } from "@/context/UserContext";
 const LikeMovie = ({ movieId }) => {
   const { userId, setUserId } = useUser();
@@ -15,7 +14,7 @@ const LikeMovie = ({ movieId }) => {
     setLiked(value);
     try {
       console.log(movieId);
-      const response = await axios.post(`${API_URL}/api/user-likes`, {
+      const response = await axios.post(`/api/user-likes`, {
         userId: parseInt(userId),
         movieId: String(movieId),
         liked: value,

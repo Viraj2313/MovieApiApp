@@ -8,7 +8,6 @@ import AboutMovie from "./pages/AboutMovie";
 import Login from "./pages/Login";
 import WishList from "./pages/WishList";
 import axios from "axios";
-import { API_URL } from "./config";
 import { triggerNotification } from "./utils/NotificationUtil";
 import Friends from "./pages/Friends";
 import Chat from "./pages/Chat";
@@ -28,7 +27,7 @@ function App() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/user`, {
+        const response = await axios.get(`/api/user`, {
           withCredentials: true,
         });
 
@@ -49,7 +48,7 @@ function App() {
 
   const checkSessionExpiration = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/check-session`, {
+      const response = await axios.get(`/api/check-session`, {
         withCredentials: true,
       });
 

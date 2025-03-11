@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
-import { API_URL } from "../config";
 import Loader from "../components/Loader";
 import "../assets/styles/AboutMovie.css";
 import { useOpenLink } from "../hooks/useOpenLink";
@@ -23,9 +22,7 @@ const AboutMovie = () => {
   const fetchMovieDetails = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${API_URL}/api/movie_details?imdbID=${imdbID}`
-      );
+      const response = await axios.get(`/api/movie_details?imdbID=${imdbID}`);
       setMovieDetails(response.data);
       await whereToWatch(response.data.Title);
     } catch (error) {
@@ -41,7 +38,7 @@ const AboutMovie = () => {
     const newTab = openLink(`/loading`, "_blank");
 
     try {
-      const response = await axios.post(`${API_URL}/api/get-trailer-url`, {
+      const response = await axios.post(`/api/get-trailer-url`, {
         movieTitle: movieTitle,
       });
       const youtubeUrl = response.data;
@@ -59,7 +56,7 @@ const AboutMovie = () => {
     const openLink = useOpenLink();
     const newTab = openLink("/loading", "_blank");
     try {
-      const response = await axios.post(`${API_URL}/api/get-imdb-url`, {
+      const response = await axios.post(`/api/get-imdb-url`, {
         movieTitle: movieTitle,
       });
       const imdbUrl = response.data;
@@ -74,7 +71,7 @@ const AboutMovie = () => {
 
   const whereToWatch = async (movieTitle) => {
     try {
-      const response = await axios.post(`${API_URL}/api/where-to-watch`, {
+      const response = await axios.post(`/api/where-to-watch`, {
         movieTitle: movieTitle,
       });
 
@@ -93,7 +90,7 @@ const AboutMovie = () => {
     const openLink = useOpenLink();
     const newTab = openLink("/loading", "_blank");
     try {
-      const response = await axios.post(`${API_URL}/api/get-wiki-url`, {
+      const response = await axios.post(`/api/get-wiki-url`, {
         movieTitle: movieTitle,
       });
       console.log(response.data);
@@ -114,7 +111,7 @@ const AboutMovie = () => {
     const newTab = openLink("/loading", "_blank");
 
     try {
-      const response = await axios.post(`${API_URL}/api/get-reviews-url`, {
+      const response = await axios.post(`/api/get-reviews-url`, {
         movieTitle: movieTitle,
       });
       console.log(response.data);

@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { API_URL } from "../config";
 import { triggerNotification } from "../utils/NotificationUtil";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -30,7 +29,7 @@ const Friends = ({ user }) => {
 
   const getUserIdFromToken = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/get-user-id`, {
+      const response = await axios.get(`/api/get-user-id`, {
         withCredentials: true,
       });
       if (response.status === 200) {
@@ -43,10 +42,9 @@ const Friends = ({ user }) => {
 
   const getFriendRequests = async () => {
     try {
-      const response = await axios.get(
-        `${API_URL}/api/friends/get-friend-requests`,
-        { params: { userId } }
-      );
+      const response = await axios.get(`/api/friends/get-friend-requests`, {
+        params: { userId },
+      });
       if (response.status === 200) {
         setFriendRequests(response.data);
       }
@@ -58,10 +56,9 @@ const Friends = ({ user }) => {
   const getFriendsList = async () => {
     try {
       console.log(userId);
-      const response = await axios.get(
-        `${API_URL}/api/friends/get-friends-list`,
-        { params: { userId } }
-      );
+      const response = await axios.get(`/api/friends/get-friends-list`, {
+        params: { userId },
+      });
       if (response.status === 200) {
         setLoading(false);
         setFriends(response.data);
@@ -73,7 +70,7 @@ const Friends = ({ user }) => {
 
   const handleAcceptReq = async (senderId) => {
     try {
-      await axios.post(`${API_URL}/api/friends/accept-request`, null, {
+      await axios.post(`/api/friends/accept-request`, null, {
         params: { userId, senderId },
       });
       getFriendRequests();
@@ -90,7 +87,7 @@ const Friends = ({ user }) => {
       return;
     }
     try {
-      const response = await axios.get(`${API_URL}/api/friends/search`, {
+      const response = await axios.get(`/api/friends/search`, {
         params: { friendId },
       });
       if (response.status === 200) {
@@ -105,7 +102,7 @@ const Friends = ({ user }) => {
 
   const handleSendFriendReq = async () => {
     try {
-      await axios.post(`${API_URL}/api/friends/send-request`, null, {
+      await axios.post(`/api/friends/send-request`, null, {
         params: { senderId: userId, receiverId: friend.id },
       });
       setFriendFound(false);

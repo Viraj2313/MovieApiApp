@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { API_URL } from "../config";
 import { toast } from "react-toastify";
 
 const Logout = ({ handleLogout }) => {

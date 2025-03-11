@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import * as signalR from "@microsoft/signalr";
-import { API_URL } from "../config";
 import axios from "axios";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
@@ -23,7 +22,7 @@ const Chat = () => {
   const getFriendName = async () => {
     try {
       const response = await axios.get(
-        `${API_URL}/api/friends/get-friend-name?receiverId=${receiverId}`
+        `/api/friends/get-friend-name?receiverId=${receiverId}`
       );
       setFriendName(response.data);
       setLoadingFriendName(false);
@@ -43,7 +42,7 @@ const Chat = () => {
     if (!senderId || !receiverId) return;
 
     const newConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${API_URL}/chathub?userId=${senderId}`)
+      .withUrl(`/chathub?userId=${senderId}`)
       .configureLogging(signalR.LogLevel.Information)
       .withAutomaticReconnect()
       .build();

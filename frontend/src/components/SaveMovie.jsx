@@ -1,7 +1,6 @@
 import React from "react";
 import { triggerNotification } from "../utils/NotificationUtil";
 import axios from "axios";
-import { API_URL } from "../config";
 const SaveMovie = ({ movie, userId }) => {
   const handleSave = async (movie) => {
     try {
@@ -17,11 +16,9 @@ const SaveMovie = ({ movie, userId }) => {
         moviePoster: movie.Poster,
       };
       console.log(moviesToSave);
-      const response = await axios.post(
-        `${API_URL}/api/add_wishlist`,
-        moviesToSave,
-        { withCredentials: true }
-      );
+      const response = await axios.post(`/api/add_wishlist`, moviesToSave, {
+        withCredentials: true,
+      });
       if (response.status == 200) {
         triggerNotification("Movie added to wishlist", "success");
       }

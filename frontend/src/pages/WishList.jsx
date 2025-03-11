@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../assets/styles/Home.css";
-import { API_URL } from "../config";
 import Loader from "../components/Loader";
 import { triggerNotification } from "../utils/NotificationUtil";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -12,7 +11,7 @@ const WishList = ({ setSelectedMovie }) => {
   const navigate = useNavigate();
   const getWishlist = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/wishlist`, {
+      const response = await axios.get(`/api/wishlist`, {
         withCredentials: true,
       });
       setWishlist(response.data);
@@ -33,7 +32,7 @@ const WishList = ({ setSelectedMovie }) => {
       const movieToDel = {
         movieId: movie.movieId,
       };
-      const response = await axios.delete(`${API_URL}/api/remove`, {
+      const response = await axios.delete(`/api/remove`, {
         data: movieToDel,
         withCredentials: true,
       });

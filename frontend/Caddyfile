@@ -1,0 +1,7 @@
+moviepedia-1.onrender.com {
+root \* /usr/share/caddy
+file_server
+
+    reverse_proxy /api/* https://movieapiapp-1.onrender.com
+
+}

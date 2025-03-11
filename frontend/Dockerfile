@@ -1,25 +1,33 @@
+# Stage 1: Build the React app with Node.js
 FROM node:18 AS builder
 
 WORKDIR /app
 
+# Copy package.json and package-lock.json to install dependencies
 COPY package*.json ./
 
 RUN npm install
 
+# Copy the rest of the application files
 COPY . .
 
+# Build the React app
 RUN npm run build
 
-FROM nginx:alpine
+# Stage 2: Serve the app using Caddy
+FROM caddy:2
 
-WORKDIR /usr/share/nginx/html
+# Set the working directory for Caddy
+WORKDIR /usr/share/caddy
 
-RUN rm -rf ./*
+# Copy the built React app from the previous stage
+COPY --from=builder /app/build /usr/share/caddy
 
-COPY --from=builder /app/build .
+# Copy the Caddyfile into the container
+COPY Caddyfile /etc/caddy/Caddyfile
 
-COPY nginx.conf /etc/nginx/conf.d/nginx.conf
+# Expose HTTP and HTTPS ports
+EXPOSE 80 443
 
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# Start Caddy
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]

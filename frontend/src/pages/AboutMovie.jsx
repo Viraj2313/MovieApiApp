@@ -7,8 +7,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import SaveMovie from "../components/SaveMovie";
 import ShareMovieButton from "../components/ShareMovieButton";
 import LikeMovie from "../components/LikeMovie";
+import { Button } from "../components/ui/button";
+import { AiFillSound } from "react-icons/ai";
 const AboutMovie = () => {
   const { imdbID } = useParams();
+  const [isPlaying, setIsPlaying] = useState(false);
   const [movieDetails, setMovieDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [watchPlatforms, setWatchPlatforms] = useState([]);
@@ -32,6 +35,17 @@ const AboutMovie = () => {
     }
   };
 
+  const handleReadPlot = () => {
+    if (!isPlaying) {
+      const utterance = new SpeechSynthesisUtterance(movieDetails.Plot);
+      speechSynthesis.speak(utterance);
+      utterance.onstart = () => setIsPlaying(true);
+      utterance.onend = () => setIsPlaying(false);
+    } else {
+      speechSynthesis.cancel();
+      setIsPlaying(false);
+    }
+  };
   const goToTrailer = async (movieTitle) => {
     const openLink = useOpenLink();
 
@@ -202,6 +216,13 @@ const AboutMovie = () => {
             </div>
 
             <p className="text-lg text-gray-700">{movieDetails.Plot}</p>
+            <Button
+              className="bg-blue-500 text-white hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 px-4 py-2 rounded-2xl hover:cursor-pointer mt-2"
+              onClick={handleReadPlot}
+            >
+              <AiFillSound />
+              {isPlaying ? "Stop Reading" : "Read Plot Aloud"}
+            </Button>
           </div>
           <div>
             <LikeMovie movieId={movieDetails.imdbID} />

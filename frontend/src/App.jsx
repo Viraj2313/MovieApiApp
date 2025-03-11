@@ -43,7 +43,7 @@ function App() {
 
     const sessionInterval = setInterval(checkSessionExpiration, 1800000); // 30 min
 
-    return () => clearInterval(sessionInterval); // Cleanup interval on unmount
+    return () => clearInterval(sessionInterval);
   }, []);
 
   const checkSessionExpiration = async () => {

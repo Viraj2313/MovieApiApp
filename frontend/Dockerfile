@@ -17,6 +17,9 @@ RUN npm run build
 # Stage 2: Serve the app using Caddy
 FROM caddy:2
 
+# Set a non-root user to run Caddy
+USER caddy
+
 # Set the working directory for Caddy
 WORKDIR /usr/share/caddy
 

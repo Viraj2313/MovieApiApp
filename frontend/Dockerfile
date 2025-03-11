@@ -26,7 +26,7 @@ WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 
 # Copy build output from the previous stage
-COPY --from=builder /app/dist .
+COPY --from=builder /app/build .
 
 # Copy custom Nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf

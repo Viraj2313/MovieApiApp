@@ -34,7 +34,6 @@ const Home = ({ setSelectedMovie }) => {
       .get("/api/home")
       .then((response) => {
         const movieData = response.data;
-        console.log(movieData);
 
         setMovies(movieData);
         setLoading(false);

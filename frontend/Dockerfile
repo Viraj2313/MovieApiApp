@@ -4,7 +4,7 @@ COPY . .
 RUN npm install && npm run build
 
 FROM nginx:latest
-COPY nginx.cofig /etc/nginx/nginx.conf
+COPY nginx.config /etc/nginx/nginx.conf
 COPY --from=build /app/build /usr/share/nginx/html
 
 EXPOSE 80

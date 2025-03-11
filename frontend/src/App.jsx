@@ -8,11 +8,10 @@ import AboutMovie from "./pages/AboutMovie";
 import Login from "./pages/Login";
 import WishList from "./pages/WishList";
 import axios from "axios";
-import { API_URL } from "./config";
 import { triggerNotification } from "./utils/NotificationUtil";
 import Friends from "./pages/Friends";
 import Chat from "./pages/Chat";
-import LoadingPage from "./components/LoadingSpinner";
+import LoadingPage from "./components/LoadingPage";
 import FriendsToShare from "./pages/FriendsToShare";
 import { UserProvider } from "./context/UserContext";
 import { ToastContainer } from "react-toastify";
@@ -28,7 +27,7 @@ function App() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/user`, {
+        const response = await axios.get("/api/user", {
           withCredentials: true,
         });
 
@@ -44,12 +43,12 @@ function App() {
 
     const sessionInterval = setInterval(checkSessionExpiration, 1800000); // 30 min
 
-    return () => clearInterval(sessionInterval); // Cleanup interval on unmount
+    return () => clearInterval(sessionInterval);
   }, []);
 
   const checkSessionExpiration = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/check-session`, {
+      const response = await axios.get("/api/check-session", {
         withCredentials: true,
       });
 
@@ -66,7 +65,7 @@ function App() {
   const handleLogout = async () => {
     try {
       const response = await axios.post(
-        `${API_URL}/api/logout`,
+        "/api/logout",
         {},
         {
           withCredentials: true,

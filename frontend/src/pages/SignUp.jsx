@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { API_URL } from "../config";
 import { Link, useNavigate } from "react-router-dom";
 import { triggerNotification } from "../utils/NotificationUtil";
 import { toast } from "react-toastify";
@@ -16,7 +15,7 @@ const SignUp = ({ setUserName }) => {
     e.preventDefault();
     try {
       navigate("/loading");
-      const response = await axios.post(`${API_URL}/api/register`, user, {
+      const response = await axios.post(`/api/register`, user, {
         withCredentials: true,
       });
 

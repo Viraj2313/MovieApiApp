@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { API_URL } from "../config";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useUser } from "../context/UserContext";
@@ -16,7 +15,7 @@ const Login = ({ setUserName }) => {
     try {
       setLoading(true);
       navigate("/loading");
-      const response = await axios.post(`${API_URL}/api/login`, user, {
+      const response = await axios.post(`/api/login`, user, {
         withCredentials: true,
       });
       if (response.status === 200) {

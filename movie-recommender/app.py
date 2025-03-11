@@ -27,7 +27,7 @@ API_URL = config["API_URL"]
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app,resources={r"/*": {"origins": "https://moviepedia-p9bf.onrender.com"}})
 # Fetch liked movies from .NET API
 async def fetch_liked_movies(user_id):
     url = f'{API_URL}/api/liked/{user_id}'

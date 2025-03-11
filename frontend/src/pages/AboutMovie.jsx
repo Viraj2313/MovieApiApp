@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
-import { API_URL } from "../config";
 import Loader from "../components/Loader";
 import "../assets/styles/AboutMovie.css";
 import { useOpenLink } from "../hooks/useOpenLink";
@@ -8,8 +7,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import SaveMovie from "../components/SaveMovie";
 import ShareMovieButton from "../components/ShareMovieButton";
 import LikeMovie from "../components/LikeMovie";
+import { Button } from "../components/ui/button";
+import { AiFillSound } from "react-icons/ai";
 const AboutMovie = () => {
   const { imdbID } = useParams();
+  const [isPlaying, setIsPlaying] = useState(false);
   const [movieDetails, setMovieDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [watchPlatforms, setWatchPlatforms] = useState([]);
@@ -23,9 +25,7 @@ const AboutMovie = () => {
   const fetchMovieDetails = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${API_URL}/api/movie_details?imdbID=${imdbID}`
-      );
+      const response = await axios.get(`/api/movie_details?imdbID=${imdbID}`);
       setMovieDetails(response.data);
       await whereToWatch(response.data.Title);
     } catch (error) {
@@ -35,13 +35,24 @@ const AboutMovie = () => {
     }
   };
 
+  const handleReadPlot = () => {
+    if (!isPlaying) {
+      const utterance = new SpeechSynthesisUtterance(movieDetails.Plot);
+      speechSynthesis.speak(utterance);
+      utterance.onstart = () => setIsPlaying(true);
+      utterance.onend = () => setIsPlaying(false);
+    } else {
+      speechSynthesis.cancel();
+      setIsPlaying(false);
+    }
+  };
   const goToTrailer = async (movieTitle) => {
     const openLink = useOpenLink();
 
     const newTab = openLink(`/loading`, "_blank");
 
     try {
-      const response = await axios.post(`${API_URL}/api/get-trailer-url`, {
+      const response = await axios.post(`/api/get-trailer-url`, {
         movieTitle: movieTitle,
       });
       const youtubeUrl = response.data;
@@ -59,7 +70,7 @@ const AboutMovie = () => {
     const openLink = useOpenLink();
     const newTab = openLink("/loading", "_blank");
     try {
-      const response = await axios.post(`${API_URL}/api/get-imdb-url`, {
+      const response = await axios.post(`/api/get-imdb-url`, {
         movieTitle: movieTitle,
       });
       const imdbUrl = response.data;
@@ -74,7 +85,7 @@ const AboutMovie = () => {
 
   const whereToWatch = async (movieTitle) => {
     try {
-      const response = await axios.post(`${API_URL}/api/where-to-watch`, {
+      const response = await axios.post(`/api/where-to-watch`, {
         movieTitle: movieTitle,
       });
 
@@ -93,7 +104,7 @@ const AboutMovie = () => {
     const openLink = useOpenLink();
     const newTab = openLink("/loading", "_blank");
     try {
-      const response = await axios.post(`${API_URL}/api/get-wiki-url`, {
+      const response = await axios.post(`/api/get-wiki-url`, {
         movieTitle: movieTitle,
       });
       console.log(response.data);
@@ -114,7 +125,7 @@ const AboutMovie = () => {
     const newTab = openLink("/loading", "_blank");
 
     try {
-      const response = await axios.post(`${API_URL}/api/get-reviews-url`, {
+      const response = await axios.post(`/api/get-reviews-url`, {
         movieTitle: movieTitle,
       });
       console.log(response.data);
@@ -205,6 +216,13 @@ const AboutMovie = () => {
             </div>
 
             <p className="text-lg text-gray-700">{movieDetails.Plot}</p>
+            <Button
+              className="bg-blue-500 text-white hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 px-4 py-2 rounded-2xl hover:cursor-pointer mt-2"
+              onClick={handleReadPlot}
+            >
+              <AiFillSound />
+              {isPlaying ? "Stop Reading" : "Read Plot Aloud"}
+            </Button>
           </div>
           <div>
             <LikeMovie movieId={movieDetails.imdbID} />

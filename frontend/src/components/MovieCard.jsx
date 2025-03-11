@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { triggerNotification } from "../utils/NotificationUtil";
 import axios from "axios";
-import { API_URL } from "../config";
 
 const MovieCard = ({
   movie,
@@ -24,13 +23,9 @@ const MovieCard = ({
         movieTitle: movie.Title,
         moviePoster: movie.Poster,
       };
-      const response = await axios.post(
-        `${API_URL}/api/wishlist`,
-        movieToSave,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(`/api/wishlist`, movieToSave, {
+        withCredentials: true,
+      });
 
       if (response.status === 200) {
         triggerNotification("Movie added to wishlist", "success");
@@ -46,7 +41,7 @@ const MovieCard = ({
       const movieToDel = {
         movieId: movie.movieId,
       };
-      const response = await axios.delete(`${API_URL}/api/remove`, {
+      const response = await axios.delete(`/api/remove`, {
         data: movieToDel,
         withCredentials: true,
       });

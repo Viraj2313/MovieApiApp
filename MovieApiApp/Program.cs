@@ -76,9 +76,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", builder =>
     {
-        builder.WithOrigins(
-                "http://localhost:5174",
-                "https://white-bush-0f005461e.4.azurestaticapps.net")
+        builder.WithOrigins("https://moviepedia-1.onrender.com/")
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();

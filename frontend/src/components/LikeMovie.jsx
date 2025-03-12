@@ -20,7 +20,7 @@ const LikeMovie = ({ movieId }) => {
         liked: value,
       });
       if (response.status === 200) {
-        toast.success("Movie liked succesfully");
+        toast.success("Your preference has been saved");
       }
     } catch (error) {
       console.log(error);

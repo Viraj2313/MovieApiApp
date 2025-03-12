@@ -48,11 +48,13 @@ const Home = ({ setSelectedMovie }) => {
         setError("Unable to fetch movies from server");
       });
   }, []);
+
   useEffect(() => {
     if (movieSearch.trim() === "") {
-      setSearchResults(movies);
+      setSearchResults([...movies]);
       return;
     }
+
     setSearchLoading(true);
     const searchWords = movieSearch.toLowerCase().split(" ");
     const filteredLocalMovies = movies.filter((movie) =>
@@ -63,7 +65,7 @@ const Home = ({ setSelectedMovie }) => {
       setSearchResults(filteredLocalMovies);
       setSearchLoading(false);
     } else {
-      const respone = axios
+      axios
         .get(`/api/home/search-movie/${movieSearch}`)
         .then((response) => {
           setSearchResults(response.data.Search || []);
@@ -71,7 +73,7 @@ const Home = ({ setSelectedMovie }) => {
         })
         .catch((error) => {
           console.log(error);
-          setsearchLoading(false);
+          setSearchLoading(false);
         });
     }
   }, [movieSearch, movies]);

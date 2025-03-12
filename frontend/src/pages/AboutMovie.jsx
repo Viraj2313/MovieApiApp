@@ -9,6 +9,7 @@ import ShareMovieButton from "../components/ShareMovieButton";
 import LikeMovie from "../components/LikeMovie";
 import { Button } from "../components/ui/button";
 import { AiFillSound } from "react-icons/ai";
+import Comments from "@/components/Comments";
 const AboutMovie = () => {
   const { imdbID } = useParams();
   const [isPlaying, setIsPlaying] = useState(false);
@@ -226,6 +227,9 @@ const AboutMovie = () => {
           </div>
           <div>
             <LikeMovie movieId={movieDetails.imdbID} />
+          </div>
+          <div>
+            <Comments movieId={movieDetails.imdbID} />
           </div>
         </div>
       ) : (

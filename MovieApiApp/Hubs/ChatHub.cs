@@ -6,15 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-public class ChatHub : Hub
+public class ChatHub(MainDbContext context) : Hub
 {
     private static readonly ConcurrentDictionary<int, string> UserConnections = new();
-    private readonly MainDbContext _context;
-
-    public ChatHub(MainDbContext context)
-    {
-        _context = context;
-    }
+    private readonly MainDbContext _context = context;
 
     public async Task GetChatHistory(int senderId, int receiverId)
     {

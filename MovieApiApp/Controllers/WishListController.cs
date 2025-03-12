@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieApiApp.Helpers;
@@ -21,13 +22,14 @@ namespace WbApp.Controllers
             _context = context;
         }
 
+        [Authorize]
         [HttpPost("add_wishlist")]
         public async Task<IActionResult> AddToWishlist([FromBody] WishList wishlistDto)
         {
-            int userId = HttpContext.GetUserIdFromToken() ?? 0;
-            if (userId == 0)
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdString, out int userId) || userId == 0)
             {
-                return Unauthorized(new { messge = "User Not found" });
+                return Unauthorized(new { message = "User not found" });
             }
             var wishlist = new WishList
             {
@@ -43,6 +45,7 @@ namespace WbApp.Controllers
             return Ok(new { message = "Movie added to wishlist" });
         }
 
+        [Authorize]
         [HttpDelete("remove")]
         public async Task<IActionResult> RemoveFromWishlist([FromBody] MovieDel movieDel)
         {
@@ -51,10 +54,10 @@ namespace WbApp.Controllers
                 return BadRequest("Invalid payload or MovieId is null/empty.");
             }
 
-            var userId = HttpContext.GetUserIdFromToken();
-            if (userId == 0)
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdString, out int userId) || userId == 0)
             {
-                return Unauthorized(new { messge = "User Not found" });
+                return Unauthorized(new { message = "User not found" });
             }
             var wishlistItem = await _context.Wishlists
                 .FirstOrDefaultAsync(w => w.MovieId == movieDel.MovieId && w.UserId == userId);
@@ -70,17 +73,16 @@ namespace WbApp.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet("wishlist")]
         public async Task<IActionResult> GetWishList()
 
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdString, out int userId))
             {
-                return Unauthorized("User not logged in.");
+                return Unauthorized(new { message = "User not found" });
             }
-            int userId = int.Parse(userIdClaim.Value);
 
 
             var wishlist = await _context.Wishlists.Where(w => w.UserId == userId).ToListAsync();

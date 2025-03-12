@@ -25,8 +25,6 @@ namespace WbApp.Controllers
             _httpClient = client;
         }
 
-
-
         //for sign up/register
         [HttpPost("register")]
         public async Task<IActionResult> SignUp([FromBody] User user)
@@ -46,29 +44,16 @@ namespace WbApp.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet("check-session")]
         public IActionResult CheckSession()
         {
-            var token = Request.Cookies["jwt"];
-
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized("Jwt token missing");
-            }
-
-            var principal = _tokenService.ValidateJwtToken(token);
-            if (principal == null)
-            {
-                return Unauthorized(new { message = "Invalid or expired token." });
-
-            }
-            var userIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
-            if (string.IsNullOrEmpty(userIdClaim))
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized(new { message = "Invalid token." });
             }
-            return Ok(new { message = "Session active", userId = userIdClaim });
+            return Ok(new { message = "Session active", userId });
         }
 
         //for login
@@ -118,23 +103,10 @@ namespace WbApp.Controllers
         [HttpGet("user")]
         public async Task<IActionResult> GetUser()
         {
-            var token = Request.Cookies["jwt"];
 
-            if (string.IsNullOrEmpty(token))
-            {
-                Debug.WriteLine("Token is null");
-                return Unauthorized();
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var claims = _tokenService.ValidateJwtToken(token);
-            if (claims == null)
-            {
-                return Unauthorized();
-            }
-
-            int userId = int.Parse(claims.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == int.Parse(userId));
             if (user == null)
             {
                 return Unauthorized();
@@ -142,28 +114,18 @@ namespace WbApp.Controllers
 
             return Ok(new { userName = user.Name });
         }
+        [Authorize]
         [HttpGet("get-user-id")]
         public IActionResult GetUserId()
         {
-            var token = Request.Cookies["jwt"];
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized(new { Message = "Token not found in cookies." });
-            }
-            var principal = _tokenService.ValidateJwtToken(token);
-            if (principal == null)
-            {
-                return Unauthorized(new { Message = "Invalid token." });
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var userIdClaim = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-
-            if (userIdClaim == null)
+            if (userId == null)
             {
                 return BadRequest(new { Message = "User ID not found in token." });
             }
 
-            return Ok(new { UserId = userIdClaim.Value });
+            return Ok(new { UserId = userId });
         }
     }
 }

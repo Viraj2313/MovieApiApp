@@ -14,5 +14,6 @@ namespace WbApp.Data
     public DbSet<FriendRequest> FriendRequests { get; set; }
     public DbSet<ChatMessage> ChatMessages { get; set; }
     public DbSet<UserLike> UserLikes { get; set; }
+    public DbSet<Comments> Comments { get; set; }
   }
 }

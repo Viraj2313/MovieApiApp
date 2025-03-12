@@ -67,5 +67,25 @@ namespace WbApp.Controllers
 
             return movieList;
         }
+
+        [HttpGet("search-movie/{query}")]
+        public async Task<IActionResult> SearchMovies(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return BadRequest("search cannot be empty");
+            }
+            try
+            {
+                string apiKey = _configuration["ApiKeyOmDb"];
+                string apiUrl = $"http://www.omdbapi.com/?s={query}&apikey={apiKey}";
+                var movies = await _httpClient.GetStringAsync(apiUrl);
+                return Ok(movies);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

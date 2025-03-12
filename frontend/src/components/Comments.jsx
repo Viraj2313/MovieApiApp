@@ -66,13 +66,13 @@ const Comments = ({ movieId }) => {
   return (
     <div className="w-full mx-auto bg-white shadow-lg rounded-lg p-6">
       {/* Comment Input Box */}
-      <div className="flex items-center gap-3 p-3 rounded-lg shadow-sm">
+      <div className="flex items-center gap-1 p-3 rounded-lg shadow-sm">
         <input
           type="text"
           placeholder="Write a comment..."
           value={commentInput}
           onChange={(e) => setCommentInput(e.target.value)}
-          className="flex-1 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 rounded-lg py-2 px-4 text-lg outline-none transition-all duration-200"
+          className="flex-1 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 rounded-lg py-2 px-2 text-lg outline-none transition-all duration-200"
         />
         <button
           onClick={handleAddComment}

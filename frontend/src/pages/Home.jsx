@@ -6,6 +6,8 @@ import Loader from "../components/Loader";
 import SaveMovie from "../components/SaveMovie";
 import { useUser } from "../context/UserContext";
 import LoadingPage from "../components/LoadingPage";
+import InternalServerError from "@/components/ServerError";
+
 const Home = ({ setSelectedMovie }) => {
   const { userId, setUserId } = useUser();
   const [movies, setMovies] = useState([]);
@@ -14,7 +16,7 @@ const Home = ({ setSelectedMovie }) => {
   const [movieSearch, setSearchMovie] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
-
+  const [serverError, setServerError] = useState(false);
   const navigate = useNavigate();
 
   const getUserIdFromToken = async () => {
@@ -37,12 +39,11 @@ const Home = ({ setSelectedMovie }) => {
     axios
       .get("/api/home")
       .then((response) => {
-        const movieData = response.data;
-
-        setMovies(movieData);
+        setMovies(response.data);
         setLoading(false);
       })
       .catch((error) => {
+        setServerError(true);
         console.log(error);
         setLoading(false);
         setError("Unable to fetch movies from server");
@@ -91,7 +92,6 @@ const Home = ({ setSelectedMovie }) => {
         <Loader />
       ) : (
         <>
-          {error && <div className="error-message">{error}</div>}
           <div className="flex justify-center items-center bg-gray-800 p-4 m-4 rounded-lg shadow-lg">
             <input
               type="text"
@@ -108,34 +108,45 @@ const Home = ({ setSelectedMovie }) => {
             </button>
           </div>
 
-          {searchLoading ? (
-            <div className="flex items-center justify-center w-full h-40">
-              <LoadingPage />
+          {/* Server Error Component */}
+          {serverError && (
+            <div className="flex justify-center">
+              <InternalServerError />
             </div>
-          ) : (
-            <ul className="movie-list grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-5 p-5">
-              {searchResults.length > 0 ? (
-                searchResults.map((movie, index) => (
-                  <li
-                    key={movie.imdbID + index}
-                    className="list-none flex flex-col text-center justify-start movie relative cursor-pointer overflow-hidden shadow-[0px_1px_11px_5px_rgba(0,0,0,0.4)] after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-b after:from-transparent after:to-[rgba(0,0,0,0.7)] after:z-10 after:pointer-events-none"
-                  >
-                    <img
-                      src={movie.Poster}
-                      alt=""
-                      className="w-[100%] h-auto transition-transform duration-300 ease hover:scale-110 hover:z-10"
-                      onClick={() => handleClick(movie)}
-                    />
-                    <h3 className="absolute bottom-2.5 left-1/2 transform -translate-x-1/2 z-20 text-white p-1.5 px-4 rounded-md text-lg shadow-[1px_1px_5px_rgba(0,0,0,0.8)] w-64">
-                      {movie.Title}
-                      <SaveMovie movie={movie} userId={userId} />
-                    </h3>
-                  </li>
-                ))
+          )}
+
+          {!serverError && (
+            <>
+              {searchLoading ? (
+                <div className="flex items-center justify-center w-full h-40">
+                  <LoadingPage />
+                </div>
               ) : (
-                <div className="no-movies-message">No such movie found</div>
+                <ul className="movie-list grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-5 p-5">
+                  {searchResults.length > 0 ? (
+                    searchResults.map((movie, index) => (
+                      <li
+                        key={movie.imdbID + index}
+                        className="list-none flex flex-col text-center justify-start movie relative cursor-pointer overflow-hidden shadow-[0px_1px_11px_5px_rgba(0,0,0,0.4)] after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-b after:from-transparent after:to-[rgba(0,0,0,0.7)] after:z-10 after:pointer-events-none"
+                      >
+                        <img
+                          src={movie.Poster}
+                          alt=""
+                          className="w-[100%] h-auto transition-transform duration-300 ease hover:scale-110 hover:z-10"
+                          onClick={() => handleClick(movie)}
+                        />
+                        <h3 className="absolute bottom-2.5 left-1/2 transform -translate-x-1/2 z-20 text-white p-1.5 px-4 rounded-md text-lg shadow-[1px_1px_5px_rgba(0,0,0,0.8)] w-64">
+                          {movie.Title}
+                          <SaveMovie movie={movie} userId={userId} />
+                        </h3>
+                      </li>
+                    ))
+                  ) : (
+                    <div className="no-movies-message">No such movie found</div>
+                  )}
+                </ul>
               )}
-            </ul>
+            </>
           )}
         </>
       )}

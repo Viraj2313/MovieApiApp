@@ -1,0 +1,19 @@
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Lock } from "lucide-react";
+
+export default function LoginRequired() {
+  return (
+    <div className="flex flex-col items-center justify-center  min-h-[calc(100vh-5rem)] sm:min-h-[calc(100vh-5rem)] bg-white text-center p-4">
+      <div className="bg-white shadow-lg rounded-2xl p-6 max-w-sm w-full">
+        <h2 className="text-xl font-semibold mt-4">Access Restricted</h2>
+        <p className="text-gray-500 mt-2">
+          You need to log in first to access this content.
+        </p>
+        <Link to="/login">
+          <Button className="mt-4 w-full">Login Now</Button>
+        </Link>
+      </div>
+    </div>
+  );
+}

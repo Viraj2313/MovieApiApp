@@ -5,6 +5,7 @@ import { PY_API_URL } from "../config";
 import LoadingPage from "@/components/LoadingPage";
 import SaveMovie from "../components/SaveMovie";
 import { useNavigate } from "react-router-dom";
+import LoginRequired from "@/components/LoginRequired";
 const Recommendations = ({ setSelectedMovie }) => {
   const { userId } = useUser();
   const [recommendations, setRecommendations] = useState([]);
@@ -35,7 +36,7 @@ const Recommendations = ({ setSelectedMovie }) => {
     console.log(`Clicked on movie with ID: ${movie.imdbID}`);
   };
   if (!userId) {
-    return <p className="text-center text-xl">No user found</p>;
+    return <LoginRequired />;
   }
 
   if (loading) {

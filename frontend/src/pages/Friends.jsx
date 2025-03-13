@@ -4,6 +4,7 @@ import { triggerNotification } from "../utils/NotificationUtil";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useUser } from "../context/UserContext";
+import LoginRequired from "@/components/LoginRequired";
 const Friends = ({ user }) => {
   const { userId, setUserId } = useUser();
   const [friends, setFriends] = useState([]);
@@ -213,9 +214,7 @@ const Friends = ({ user }) => {
           </div>
         </div>
       ) : (
-        <div className="text-center text-xl text-red-500">
-          Please login first.
-        </div>
+        <LoginRequired />
       )}
     </div>
   );

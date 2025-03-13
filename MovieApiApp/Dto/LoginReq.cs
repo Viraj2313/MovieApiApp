@@ -1,4 +1,4 @@
-﻿namespace WbApp.Dto
+﻿namespace MovieApiApp.Dto
 {
     public class LoginReq
 

@@ -1,4 +1,4 @@
-namespace WbApp.Models
+namespace MovieApiApp.Models
 {
     public class UserLike
     {

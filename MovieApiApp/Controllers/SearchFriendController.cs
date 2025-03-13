@@ -1,10 +1,7 @@
-using Form.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using WbApp.Models;
-using WbApp.Data;
+using MovieApiApp.Data;
+using MovieApiApp.Models;
 
 namespace MovieApiApp.Controllers
 {

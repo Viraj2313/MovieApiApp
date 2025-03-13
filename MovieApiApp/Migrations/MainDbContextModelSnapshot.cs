@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WbApp.Data;
+using MovieApiApp.Data;
+
 
 #nullable disable
 
@@ -71,10 +72,15 @@ namespace MovieApiApp.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("ParentCommentId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentCommentId");
 
                     b.ToTable("Comments");
                 });
@@ -208,6 +214,20 @@ namespace MovieApiApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Wishlists");
+                });
+
+            modelBuilder.Entity("Form.Models.Comments", b =>
+                {
+                    b.HasOne("Form.Models.Comments", "ParentComment")
+                        .WithMany("Replies")
+                        .HasForeignKey("ParentCommentId");
+
+                    b.Navigation("ParentComment");
+                });
+
+            modelBuilder.Entity("Form.Models.Comments", b =>
+                {
+                    b.Navigation("Replies");
                 });
 #pragma warning restore 612, 618
         }

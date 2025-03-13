@@ -13,8 +13,8 @@ using MovieApiApp.Data;
 namespace MovieApiApp.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20250312132853_CommentsTable")]
-    partial class CommentsTable
+    [Migration("20250313052918_ReplyToCommentsAdded")]
+    partial class ReplyToCommentsAdded
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,10 +75,15 @@ namespace MovieApiApp.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("ParentCommentId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentCommentId");
 
                     b.ToTable("Comments");
                 });
@@ -212,6 +217,20 @@ namespace MovieApiApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Wishlists");
+                });
+
+            modelBuilder.Entity("Form.Models.Comments", b =>
+                {
+                    b.HasOne("Form.Models.Comments", "ParentComment")
+                        .WithMany("Replies")
+                        .HasForeignKey("ParentCommentId");
+
+                    b.Navigation("ParentComment");
+                });
+
+            modelBuilder.Entity("Form.Models.Comments", b =>
+                {
+                    b.Navigation("Replies");
                 });
 #pragma warning restore 612, 618
         }

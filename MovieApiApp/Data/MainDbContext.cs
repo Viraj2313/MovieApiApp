@@ -1,8 +1,7 @@
-﻿using Form.Models;
-using Microsoft.EntityFrameworkCore;
-using WbApp.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieApiApp.Models;
 
-namespace WbApp.Data
+namespace MovieApiApp.Data
 {
   public class MainDbContext : DbContext
   {
@@ -14,6 +13,6 @@ namespace WbApp.Data
     public DbSet<FriendRequest> FriendRequests { get; set; }
     public DbSet<ChatMessage> ChatMessages { get; set; }
     public DbSet<UserLike> UserLikes { get; set; }
-    public DbSet<Comments> Comments { get; set; }
+    public DbSet<Comment> Comments { get; set; }
   }
 }

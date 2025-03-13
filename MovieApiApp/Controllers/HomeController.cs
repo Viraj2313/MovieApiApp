@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Net.Http;
-using System.Threading.Tasks;
 
-namespace WbApp.Controllers
+namespace MovieApiApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

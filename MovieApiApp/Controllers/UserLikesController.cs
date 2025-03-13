@@ -1,10 +1,10 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WbApp.Data;
-using WbApp.Models;
+using MovieApiApp.Data;
+using MovieApiApp.Models;
 
-namespace WbApp.Controllers
+namespace MovieApiApp.Controllers
 {
     [ApiController]
     [Route("api")]

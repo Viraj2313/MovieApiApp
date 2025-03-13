@@ -1,4 +1,4 @@
-namespace Form.Models
+namespace MovieApiApp.Models
 {
     public class Friend
     {

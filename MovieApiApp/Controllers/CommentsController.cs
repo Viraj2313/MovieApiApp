@@ -1,9 +1,9 @@
-using Form.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WbApp.Data;
+using MovieApiApp.Data;
+using MovieApiApp.Models;
 
-namespace WbApp.Controllers
+namespace MovieApiApp.Controllers
 {
     [ApiController]
     [Route("api")]
@@ -18,38 +18,47 @@ namespace WbApp.Controllers
         [HttpGet("movies/{movieId}/get-comments")]
         public async Task<IActionResult> GetComments(string movieId)
         {
-            var comments = await _context.Comments.Where(c => c.MovieId == movieId).Select(c =>
-                new
+            var comments = await _context.Comments
+                .Where(c => c.MovieId == movieId && c.ParentCommentId == null) // Get only main comments
+                .Include(c => c.Replies) // Load replies
+                .Select(c => new
                 {
-                    Id = c.Id,
-                    CommentText = c.CommentText,
+                    c.Id,
+                    c.CommentText,
                     CommentorName = c.Name,
                     CommentorId = c.UserId,
-                    CreatedAt = c.CreatedAt
-                }
-            ).ToListAsync();
-            if (comments == null)
-            {
-                return NotFound("No comments found for this movie.");
+                    c.CreatedAt,
+                    Replies = c.Replies.Select(r => new
+                    {
+                        r.Id,
+                        r.CommentText,
+                        CommentorName = r.Name,
+                        CommentorId = r.UserId,
+                        r.CreatedAt,
+                        r.ParentCommentId
+                    }).ToList()
+                }).ToListAsync();
 
-            }
             return Ok(comments);
         }
 
-        [HttpPost("movies/{userId}/{movieId}/{commentText}")]
-        public async Task<IActionResult> AddComment(int userId, string movieId, string commentText)
+        //post and reply comments method
+        [HttpPost("movies/{userId}/{movieId}/{commentText}/{parentCommentId?}")]
+        public async Task<IActionResult> AddComment(int userId, string movieId, string commentText, int? parentCommentId = null)
         {
             var name = await _context.Users.Where(u => u.Id == userId).Select(u => u.Name).FirstOrDefaultAsync();
             if (name == null)
             {
                 return BadRequest("User not found");
             }
-            var comment = new Comments
+
+            var comment = new Comment
             {
                 UserId = userId,
                 Name = name,
                 MovieId = movieId,
                 CommentText = commentText,
+                ParentCommentId = parentCommentId,
             };
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();

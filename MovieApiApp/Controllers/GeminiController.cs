@@ -1,25 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
-using WbApp.Dto;
+using MovieApiApp.Dto;
 using WbApp.Services;
 
-[ApiController]
-[Route("api/gemini")]
-public class GeminiController : ControllerBase
+namespace MovieApiApp.Controllers
 {
-    private readonly GeminiService _geminiService;
-    public GeminiController(GeminiService geminiService)
+    [ApiController]
+    [Route("api/gemini")]
+    public class GeminiController : ControllerBase
     {
-        _geminiService = geminiService;
-    }
-    [HttpPost("ask")]
-    public async Task<IActionResult> Ask([FromBody] PromptDto promptDto)
-    {
-        if (string.IsNullOrWhiteSpace(promptDto.Prompt))
+        private readonly GeminiService _geminiService;
+        public GeminiController(GeminiService geminiService)
         {
-            return BadRequest("Prompt is required");
+            _geminiService = geminiService;
         }
+        [HttpPost("ask")]
+        public async Task<IActionResult> Ask([FromBody] PromptDto promptDto)
+        {
+            if (string.IsNullOrWhiteSpace(promptDto.Prompt))
+            {
+                return BadRequest("Prompt is required");
+            }
 
-        var result = await _geminiService.GetGeminiResponse(promptDto.Prompt);
-        return Ok(result);
+            var result = await _geminiService.GetGeminiResponse(promptDto.Prompt);
+            return Ok(result);
+        }
     }
 }

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WbApp.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using MovieApiApp.Data;
 
-namespace WbApp.Controllers
+namespace MovieApiApp.Controllers
 {
     [Route("api")]
     [ApiController]

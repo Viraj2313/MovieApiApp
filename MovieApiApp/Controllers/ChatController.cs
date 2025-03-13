@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WbApp.Data;
+using MovieApiApp.Data;
 
 [Route("api/chat")]
 [ApiController]

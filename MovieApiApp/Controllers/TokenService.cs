@@ -1,10 +1,10 @@
-﻿using Form.Models;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
+using MovieApiApp.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace WbApp.Controllers
+namespace MovieApiApp.Controllers
 {
     public class TokenService
     {
@@ -13,7 +13,7 @@ namespace WbApp.Controllers
         {
             _configuration = configuration;
         }
-            public string GenerateToken(User user)
+        public string GenerateToken(User user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -22,7 +22,7 @@ namespace WbApp.Controllers
                 new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
                 new Claim(ClaimTypes.Email,user.Email)
             };
-            var token =new JwtSecurityToken(
+            var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,

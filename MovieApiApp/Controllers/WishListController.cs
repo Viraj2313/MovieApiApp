@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MovieApiApp.Helpers;
-using System.Diagnostics;
+using MovieApiApp.Data;
+using MovieApiApp.Dto;
+using MovieApiApp.Models;
 using System.Security.Claims;
-using WbApp.Data;
-using WbApp.Dto;
-using WbApp.Models;
 
-namespace WbApp.Controllers
+namespace MovieApiApp.Controllers
 {
     [Route("api")]
     [ApiController]

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify,request
 import aiohttp
 from flask_cors import CORS
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -120,5 +120,10 @@ async def recommend(user_id):
     recommendations = list({movie["imdbID"]: movie for movie in recommendations}.values())  # Remove duplicates
     
     return jsonify({"Recommendations": recommendations})
+@app.route("/healthcheck",methods=['GET','HEAD'])
+def healthCheck():
+    if request.method=='HEAD':
+        return '', 200
+    return jsonify({"status":"OK"}),200
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

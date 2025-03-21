@@ -85,5 +85,11 @@ namespace MovieApiApp.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        [HttpGet("healthcheck"), HttpHead("healthcheck")]
+        public IActionResult HealthCheck()
+        {
+            return Ok(new { status = "OK" });
+        }
+
     }
 }

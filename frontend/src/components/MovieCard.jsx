@@ -1,8 +1,9 @@
 import { useInView } from "react-intersection-observer";
 import SaveMovie from "./SaveMovie";
+import { useUser } from "@/context/UserContext";
 const MovieCard = ({ movie, onClick }) => {
   const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true });
-
+  const { userId } = useUser();
   return (
     <li
       ref={ref}
@@ -18,7 +19,7 @@ const MovieCard = ({ movie, onClick }) => {
       />
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent p-3 text-white text-center">
         <h3 className="text-lg font-semibold">{movie.Title}</h3>
-        <SaveMovie movie={movie} />
+        <SaveMovie movie={movie} userId={userId} />
       </div>
     </li>
   );

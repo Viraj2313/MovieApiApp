@@ -1,11 +1,14 @@
 import React from "react";
 import { triggerNotification } from "../utils/NotificationUtil";
 import axios from "axios";
+import { toast } from "react-toastify";
+import nProgress from "nprogress";
 const SaveMovie = ({ movie, userId }) => {
   const handleSave = async (movie) => {
     try {
+      nProgress.start();
       if (!userId) {
-        triggerNotification("You need to login first", "error");
+        toast.error("You need to login first");
         return;
       }
 
@@ -20,9 +23,11 @@ const SaveMovie = ({ movie, userId }) => {
         withCredentials: true,
       });
       if (response.status == 200) {
-        triggerNotification("Movie added to wishlist", "success");
+        toast.success("Movie added to wishlist");
+        nProgress.done();
       }
     } catch (error) {
+      nProgress.done();
       triggerNotification(response.data.error);
       console.log(error);
     }

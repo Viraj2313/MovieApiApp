@@ -36,7 +36,7 @@ const LikeMovie = ({ movieId }) => {
             onClick={() => {
               handleLike(true);
             }}
-            className="cursor-pointer"
+            className="cursor-pointer bg-gray-950 text-white"
           >
             Yes
           </Button>
@@ -44,7 +44,7 @@ const LikeMovie = ({ movieId }) => {
             onClick={() => {
               handleLike(false);
             }}
-            className="cursor-pointer"
+            className="cursor-pointer bg-gray-950 text-white"
           >
             No
           </Button>

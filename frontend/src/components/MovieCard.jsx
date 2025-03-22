@@ -1,90 +1,25 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { triggerNotification } from "../utils/NotificationUtil";
-import axios from "axios";
-
-const MovieCard = ({
-  movie,
-  setSelectedMovie,
-  showRemoveButton,
-  getWishlist,
-}) => {
-  const navigate = useNavigate();
-
-  const handleClick = (movie) => {
-    setSelectedMovie(movie.imdbID);
-    navigate(`/about/${movie.Title}`);
-  };
-
-  const handleSave = async (movie) => {
-    try {
-      const movieToSave = {
-        movieId: movie.imdbID,
-        movieTitle: movie.Title,
-        moviePoster: movie.Poster,
-      };
-      const response = await axios.post(`/api/wishlist`, movieToSave, {
-        withCredentials: true,
-      });
-
-      if (response.status === 200) {
-        triggerNotification("Movie added to wishlist", "success");
-      }
-    } catch (error) {
-      triggerNotification("Failed to save movie", "error");
-      console.log(error);
-    }
-  };
-
-  const handleRemove = async (movie) => {
-    try {
-      const movieToDel = {
-        movieId: movie.movieId,
-      };
-      const response = await axios.delete(`/api/remove`, {
-        data: movieToDel,
-        withCredentials: true,
-      });
-
-      if (response.status === 200) {
-        triggerNotification("Movie removed from wishlist", "success");
-        getWishlist(); // Refresh Wishlist
-      }
-    } catch (error) {
-      triggerNotification("Unable to remove movie", "error");
-      console.log(error);
-    }
-  };
+import { useInView } from "react-intersection-observer";
+import SaveMovie from "./SaveMovie";
+const MovieCard = ({ movie, onClick }) => {
+  const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true });
 
   return (
     <li
-      key={movie.imdbID}
-      className="list-none flex flex-col text-center justify-start movie relative cursor-pointer overflow-hidden shadow-[0px_1px_11px_5px_rgba(0,0,0,0.4)] after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-b after:from-transparent after:to-[rgba(0,0,0,0.7)] after:z-10 after:pointer-events-none"
+      ref={ref}
+      className={`relative cursor-pointer overflow-hidden shadow-lg dark:shadow-md rounded-lg transition-all transform hover:scale-105 hover:shadow-xl hover:shadow-gray-500/40 dark:hover:shadow-gray-900/80 ${
+        inView ? "animate-fadeIn" : "opacity-0"
+      }`}
+      onClick={() => onClick(movie)}
     >
       <img
         src={movie.Poster}
-        alt={`${movie.Title} Poster`}
-        className="w-[100%] h-auto transition-transform duration-300 ease hover:scale-110 hover:z-10"
-        onClick={() => handleClick(movie)}
+        alt={movie.Title}
+        className="w-full h-auto rounded-lg object-cover transition-transform duration-300 ease-in-out hover:scale-110"
       />
-      <h3 className="absolute bottom-2.5 left-1/2 transform -translate-x-1/2 z-20 text-white p-1.5 px-4 rounded-md text-lg shadow-[1px_1px_5px_rgba(0,0,0,0.8)] w-64">
-        {movie.Title}
-        {showRemoveButton ? (
-          <button
-            className="mt-2 border-none cursor-pointer bg-[#ff5722] text-white p-1.5 px-4 rounded-md transition-colors duration-300 ease relative z-20 hover:bg-[#e64a19]"
-            onClick={() => handleRemove(movie)}
-          >
-            Remove
-          </button>
-        ) : (
-          <button
-            className="mt-2 border-none cursor-pointer bg-[#ff5722] text-white p-1.5 px-4 rounded-md transition-colors duration-300 ease relative z-20 hover:bg-[#e64a19]"
-            onClick={() => handleSave(movie)}
-          >
-            Save
-          </button>
-        )}
-      </h3>
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent p-3 text-white text-center">
+        <h3 className="text-lg font-semibold">{movie.Title}</h3>
+        <SaveMovie movie={movie} />
+      </div>
     </li>
   );
 };

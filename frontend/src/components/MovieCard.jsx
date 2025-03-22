@@ -10,6 +10,9 @@ const MovieCard = ({ movie, onClick }) => {
         inView ? "animate-fadeIn" : "opacity-0"
       }`}
       onClick={() => onClick(movie)}
+      style={{
+        willChange: "opacity, transform",
+      }}
     >
       <img
         src={movie.Poster}

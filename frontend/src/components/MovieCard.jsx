@@ -1,7 +1,7 @@
 import { useInView } from "react-intersection-observer";
 import SaveMovie from "./SaveMovie";
 const MovieCard = ({ movie, onClick }) => {
-  const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true });
+  const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: true });
 
   return (
     <li

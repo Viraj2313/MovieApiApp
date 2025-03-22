@@ -6,6 +6,8 @@ import { triggerNotification } from "../utils/NotificationUtil";
 import { Navigate, useNavigate } from "react-router-dom";
 import LoginRequired from "@/components/LoginRequired";
 import { useUser } from "@/context/UserContext";
+import nProgress from "nprogress";
+import { toast } from "react-toastify";
 const WishList = ({ setSelectedMovie }) => {
   const [wishlist, setWishlist] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,15 +16,18 @@ const WishList = ({ setSelectedMovie }) => {
   const { userId } = useUser();
   const getWishlist = async () => {
     try {
+      nProgress.start();
       const response = await axios.get(`/api/wishlist`, {
         withCredentials: true,
       });
       setWishlist(response.data);
       console.log(wishlist);
     } catch (error) {
+      nProgress.done();
       setError(error.message);
     } finally {
       setLoading(false);
+      nProgress.done();
     }
   };
   useEffect(() => {
@@ -32,6 +37,7 @@ const WishList = ({ setSelectedMovie }) => {
   //handle remove a movie
   const handleRemove = async (movie) => {
     try {
+      nProgress.start();
       const movieToDel = {
         movieId: movie.movieId,
       };
@@ -41,12 +47,14 @@ const WishList = ({ setSelectedMovie }) => {
       });
 
       if (response.status === 200) {
-        triggerNotification("Movie removed from wishlist", "success");
+        toast.success("Movie removed from wishlist");
         getWishlist();
+        nProgress.done();
       }
     } catch (error) {
-      triggerNotification(`Unable to remove movie from wishlist`, "error");
+      toast.error("Unable to remove movie from wishlist");
       console.log(error);
+      nProgress.done();
     }
   };
   const handleClick = (movie) => {
@@ -65,7 +73,7 @@ const WishList = ({ setSelectedMovie }) => {
           <>
             <div className="text-2xl font-bold mt-5 ml-5">WishList</div>
             {wishlist && wishlist.length > 0 ? (
-              <ul className="movie-list grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-5 p-5">
+              <ul className="movie-list grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-5 p-5 animate-fadeIn">
                 {wishlist.map((item) => (
                   <li
                     key={item.id}

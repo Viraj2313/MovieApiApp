@@ -40,7 +40,6 @@ const Comments = ({ movieId }) => {
         ? replyInputs[parentCommentId]
         : commentInput;
 
-      // Check if the appropriate text field is empty
       if (!text || text.trim() === "") {
         toast.info("Comment cannot be empty");
         return;
@@ -52,11 +51,9 @@ const Comments = ({ movieId }) => {
       if (response.status === 200) {
         setCommentInput("");
 
-        // If this is a reply, completely remove the input field by removing that key from replyInputs
-        // This will hide the input field but keep the Reply button visible
         if (parentCommentId) {
           const newReplyInputs = { ...replyInputs };
-          delete newReplyInputs[parentCommentId]; // Remove the key entirely
+          delete newReplyInputs[parentCommentId];
           setReplyInputs(newReplyInputs);
         }
 
@@ -86,16 +83,13 @@ const Comments = ({ movieId }) => {
     }
   };
 
-  // Toggle reply input visibility
   const toggleReplyInput = (commentId) => {
     setReplyInputs((prev) => {
       const newReplyInputs = { ...prev };
 
-      // If the reply input is already showing for this comment, hide it
       if (commentId in newReplyInputs) {
         delete newReplyInputs[commentId];
       } else {
-        // Otherwise, show it and initialize with empty string
         newReplyInputs[commentId] = "";
       }
 
@@ -104,27 +98,25 @@ const Comments = ({ movieId }) => {
   };
 
   return (
-    <div className="w-full mx-auto bg-white shadow-lg rounded-lg p-6">
-      {/* Comment Input Box */}
-      <div className="flex items-center gap-1 p-3 rounded-lg shadow-sm">
+    <div className="w-full mx-auto  shadow-lg rounded-lg p-6">
+      <div className="flex items-center gap-1 p-3 rounded-lg shadow-sm dark:bg-gray-800">
         <input
           type="text"
           placeholder="Write a comment..."
           value={commentInput}
           onChange={(e) => setCommentInput(e.target.value)}
-          className="flex-1 border border-gray-300 rounded-lg py-2 px-2"
+          className="flex-1 border order-gray-300 rounded-lg py-2 px-2"
         />
         <button
           onClick={() => handleAddComment()}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
+          className="bg-blue-500 hover:bg-blue-600  font-semibold py-2 px-4 rounded-lg"
         >
           Add
         </button>
       </div>
 
-      {/* Comments List */}
       <div className="mt-4">
-        <h2 className="text-xl font-semibold text-gray-800 mb-3">Comments</h2>
+        <h2 className="text-xl font-semibold mb-3">Comments</h2>
         {loading ? (
           <div className="flex items-center justify-center h-32">
             <LoadingPage />
@@ -136,7 +128,7 @@ const Comments = ({ movieId }) => {
             {comments.map((comment) => (
               <li
                 key={comment.id}
-                className="p-4 border rounded-lg mt-2 flex justify-between items-start"
+                className="p-4 shadow-md rounded-lg mt-2 flex justify-between items-start dark:bg-gray-800"
               >
                 <div>
                   <p className="font-semibold">{comment.commentorName}</p>
@@ -148,7 +140,6 @@ const Comments = ({ movieId }) => {
                     {comment.id in replyInputs ? "Cancel" : "Reply"}
                   </button>
 
-                  {/* Reply Input */}
                   {comment.id in replyInputs && (
                     <div className="ml-6 mt-2">
                       <input
@@ -194,7 +185,6 @@ const Comments = ({ movieId }) => {
                   )}
                 </div>
 
-                {/* Show delete button only for the user's own comments */}
                 {comment.commentorId === parseInt(userId) && (
                   <button
                     onClick={() => handleDeleteComment(comment.id)}

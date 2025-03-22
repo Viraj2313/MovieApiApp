@@ -6,7 +6,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 import json
 import os
 
-# Load config
 def load_config():
     config = {}
     try:
@@ -15,7 +14,6 @@ def load_config():
     except FileNotFoundError:
         print("Warning: config.json not found. Using environment variables.")
 
-    # Override with environment variables 
     config["API_URL"] = os.getenv("API_URL", config.get("API_URL"))
     config["API_KEY"] = os.getenv("API_KEY", config.get("API_KEY"))
 
@@ -27,8 +25,9 @@ API_URL = config["API_URL"]
 
 
 app = Flask(__name__)
-CORS(app,resources={r"/*": {"origins": "https://moviepedia-p9bf.onrender.com"}})
-# Fetch liked movies from .NET API
+CORS(app,resources={r"/*": {"origins": ["https://moviepedia-p9bf.onrender.com","http://localhost:5174"]}})
+
+
 async def fetch_liked_movies(user_id):
     url = f'{API_URL}/api/liked/{user_id}'
     async with aiohttp.ClientSession() as session:
@@ -43,7 +42,6 @@ async def fetch_liked_movies(user_id):
     
     return movie_data
 
-# Fetch movie details from OMDB API
 async def fetch_movie_details(movie_id):
     api_url = f"http://www.omdbapi.com/?i={movie_id}&apikey={API_KEY}"
     async with aiohttp.ClientSession() as session:
@@ -60,7 +58,6 @@ async def fetch_movie_details(movie_id):
     else:
         return None
 
-# Fetch home movies from .NET API
 async def fetch_movies():
     url = f"{API_URL}/api/Home"
     async with aiohttp.ClientSession() as session:

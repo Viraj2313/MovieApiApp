@@ -1,19 +1,22 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useUser } from "../../context/UserContext";
-
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
+import nProgress from "nprogress";
 const Login = ({ setUserName }) => {
-  const { userId, setUserId } = useUser();
+  const { setUserId } = useUser();
   const navigate = useNavigate();
   const [user, setUser] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-
+  const location = useLocation();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
+      nProgress.start();
       navigate("/loading");
       const response = await axios.post(`/api/login`, user, {
         withCredentials: true,
@@ -30,12 +33,13 @@ const Login = ({ setUserName }) => {
       navigate("/login");
     } finally {
       setLoading(false);
+      nProgress.done();
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="p-8 rounded-xl shadow-lg w-full max-w-sm bg-white dark:bg-gray-800 dark:text-white">
         <h1 className="text-2xl font-bold text-center mb-4">Login</h1>
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
           <input
@@ -44,7 +48,7 @@ const Login = ({ setUserName }) => {
             value={user.email}
             onChange={(e) => setUser({ ...user, email: e.target.value })}
             placeholder="Enter your Email"
-            className="border rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-400"
             required
           />
           <input
@@ -53,14 +57,14 @@ const Login = ({ setUserName }) => {
             value={user.password}
             onChange={(e) => setUser({ ...user, password: e.target.value })}
             placeholder="Enter your Password"
-            className="border rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-400"
             required
           />
           <button
             type="submit"
-            className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all cursor-pointer"
+            className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all cursor-pointer dark:bg-blue-500 dark:hover:bg-blue-600"
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>

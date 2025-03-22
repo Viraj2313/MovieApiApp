@@ -18,6 +18,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import Recommendations from "./pages/Recommendations";
+import nProgress from "nprogress";
 function App() {
   const navigate = useNavigate();
   const [user, setUserName] = useState(null);
@@ -64,6 +65,7 @@ function App() {
   };
   const handleLogout = async () => {
     try {
+      nProgress.start();
       const response = await axios.post(
         "/api/logout",
         {},
@@ -79,6 +81,8 @@ function App() {
       triggerNotification();
       toast.error("Logout failed, please try again");
       console.log("Logout failed", error.response?.data || error.message);
+    } finally {
+      nProgress.done();
     }
   };
   return (

@@ -6,6 +6,7 @@ import LoadingPage from "@/components/LoadingPage";
 import SaveMovie from "../components/SaveMovie";
 import { useNavigate } from "react-router-dom";
 import LoginRequired from "@/components/LoginRequired";
+import nProgress from "nprogress";
 const Recommendations = ({ setSelectedMovie }) => {
   const { userId } = useUser();
   const [recommendations, setRecommendations] = useState([]);
@@ -16,13 +17,17 @@ const Recommendations = ({ setSelectedMovie }) => {
 
     const fetchRecommendations = async () => {
       try {
+        nProgress.start();
         const response = await axios.get(`${PY_API_URL}/recommend/${userId}`);
+        console.log(response.data);
+
         setRecommendations(response.data.Recommendations);
       } catch (error) {
         console.error("Error fetching recommendations:", error);
         setRecommendations([]);
       } finally {
         setLoading(false);
+        nProgress.done();
       }
     };
 

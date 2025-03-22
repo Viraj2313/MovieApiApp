@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "../assets/styles/Home.css";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,8 @@ import SaveMovie from "../components/SaveMovie";
 import { useUser } from "../context/UserContext";
 import LoadingPage from "../components/LoadingPage";
 import InternalServerError from "@/components/ServerError";
-
+import nProgress from "nprogress";
+import MovieCard from "../components/MovieCard";
 const Home = ({ setSelectedMovie }) => {
   const { userId, setUserId } = useUser();
   const [movies, setMovies] = useState([]);
@@ -25,45 +26,49 @@ const Home = ({ setSelectedMovie }) => {
         withCredentials: true,
       });
       if (response.status === 200) {
-        console.log(response.data.userId);
         setUserId(response.data.userId);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Failed to get user ID:", error);
     }
   };
 
   useEffect(() => {
     setLoading(true);
+    nProgress.start();
     getUserIdFromToken();
+
     axios
       .get("/api/home")
       .then((response) => {
         setMovies(response.data);
+        setSearchResults(response.data);
         setLoading(false);
+        nProgress.done();
       })
       .catch((error) => {
+        console.error(error);
         setServerError(true);
-        console.log(error);
-        setLoading(false);
         setError("Unable to fetch movies from server");
+        setLoading(false);
+        nProgress.done();
       });
   }, []);
 
   useEffect(() => {
-    if (movieSearch.trim() === "") {
+    if (!movieSearch.trim()) {
       setSearchResults([...movies]);
       return;
     }
 
     setSearchLoading(true);
     const searchWords = movieSearch.toLowerCase().split(" ");
-    const filteredLocalMovies = movies.filter((movie) =>
+    const filteredMovies = movies.filter((movie) =>
       searchWords.every((word) => movie.Title.toLowerCase().includes(word))
     );
 
-    if (filteredLocalMovies.length > 0) {
-      setSearchResults(filteredLocalMovies);
+    if (filteredMovies.length > 0) {
+      setSearchResults(filteredMovies);
       setSearchLoading(false);
     } else {
       axios
@@ -73,7 +78,7 @@ const Home = ({ setSelectedMovie }) => {
           setSearchLoading(false);
         })
         .catch((error) => {
-          console.log(error);
+          console.error("Error fetching search results:", error);
           setSearchLoading(false);
         });
     }
@@ -81,9 +86,7 @@ const Home = ({ setSelectedMovie }) => {
 
   const handleClick = (movie) => {
     setSelectedMovie(movie.imdbID);
-    console.log(movie);
     navigate(`/about/${movie.Title}/${movie.imdbID}`);
-    console.log(`Clicked on movie with ID: ${movie.imdbID}`);
   };
 
   return (
@@ -91,31 +94,29 @@ const Home = ({ setSelectedMovie }) => {
       {loading ? (
         <Loader />
       ) : (
-        <>
-          <div className="flex justify-center items-center bg-gray-800 p-4 m-4 rounded-lg shadow-lg">
+        <div className="min-h-screen dark:bg-gray-900 text-gray-900 dark:text-gray-200 p-4 m-4">
+          <div className="flex justify-center items-center mb-6 p-4 bg-gray-200 dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg shadow-gray-500/40 dark:shadow-gray-900/80 w-full md:1/2 sm:1/2 lg:w-3/4 mx-auto">
             <input
               type="text"
               value={movieSearch}
               onChange={(e) => setSearchMovie(e.target.value)}
-              className="border-b-2 border-gray-500 h-12 focus:outline-none focus:border-blue-500 text-gray-200 placeholder-gray-400 bg-gray-700 text-lg px-4 rounded-lg w-full sm:w-[380px] mr-4"
-              placeholder="Enter movie to search"
+              className="border-b-2 border-gray-500 bg-transparent text-lg px-4 py-2 rounded-lg w-full sm:w-[380px] focus:outline-none focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500 dark:text-white"
+              placeholder="Search for a movie..."
+              autoFocus
             />
             <button
-              className="bg-blue-600 text-white rounded-lg px-6 py-3 text-lg font-semibold shadow-md hover:scale-105 transition-transform duration-300 hover:bg-blue-700 focus:outline-none"
+              className="bg-blue-600 text-white rounded-lg px-6 py-3 ml-4 text-lg font-semibold shadow-md hover:scale-105 transition-transform duration-300 hover:bg-blue-700 focus:outline-none cursor-pointer"
               onClick={() => setSearchMovie(movieSearch)}
             >
               Search
             </button>
           </div>
 
-          {/* Server Error Component */}
-          {serverError && (
+          {serverError ? (
             <div className="flex justify-center">
               <InternalServerError />
             </div>
-          )}
-
-          {!serverError && (
+          ) : (
             <>
               {searchLoading ? (
                 <div className="flex items-center justify-center w-full h-40">
@@ -125,30 +126,22 @@ const Home = ({ setSelectedMovie }) => {
                 <ul className="movie-list grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-5 p-5">
                   {searchResults.length > 0 ? (
                     searchResults.map((movie, index) => (
-                      <li
-                        key={movie.imdbID + index}
-                        className="list-none flex flex-col text-center justify-start movie relative cursor-pointer overflow-hidden shadow-[0px_1px_11px_5px_rgba(0,0,0,0.4)] after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-b after:from-transparent after:to-[rgba(0,0,0,0.7)] after:z-10 after:pointer-events-none"
-                      >
-                        <img
-                          src={movie.Poster}
-                          alt=""
-                          className="w-[100%] h-auto transition-transform duration-300 ease hover:scale-110 hover:z-10"
-                          onClick={() => handleClick(movie)}
-                        />
-                        <h3 className="absolute bottom-2.5 left-1/2 transform -translate-x-1/2 z-20 text-white p-1.5 px-4 rounded-md text-lg shadow-[1px_1px_5px_rgba(0,0,0,0.8)] w-64">
-                          {movie.Title}
-                          <SaveMovie movie={movie} userId={userId} />
-                        </h3>
-                      </li>
+                      <MovieCard
+                        movie={movie}
+                        key={index}
+                        onClick={handleClick}
+                      />
                     ))
                   ) : (
-                    <div className="no-movies-message">No such movie found</div>
+                    <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg text-gray-500 dark:text-gray-400 text-center">
+                      No movies found. Try a different search term.
+                    </p>
                   )}
                 </ul>
               )}
             </>
           )}
-        </>
+        </div>
       )}
     </>
   );

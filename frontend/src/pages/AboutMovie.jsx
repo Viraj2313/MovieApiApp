@@ -10,6 +10,7 @@ import LikeMovie from "../components/LikeMovie";
 import { Button } from "../components/ui/button";
 import { AiFillSound } from "react-icons/ai";
 import Comments from "@/components/Comments";
+import nProgress from "nprogress";
 const AboutMovie = () => {
   const { imdbID } = useParams();
   const [isPlaying, setIsPlaying] = useState(false);
@@ -24,6 +25,7 @@ const AboutMovie = () => {
   }, [imdbID]);
 
   const fetchMovieDetails = async () => {
+    nProgress.start();
     setLoading(true);
     try {
       const response = await axios.get(`/api/movie_details?imdbID=${imdbID}`);
@@ -33,6 +35,7 @@ const AboutMovie = () => {
       console.error("Error fetching movie details:", error);
     } finally {
       setLoading(false);
+      nProgress.done();
     }
   };
 
@@ -142,18 +145,16 @@ const AboutMovie = () => {
     }
   };
   return (
-    <div className="max-w-screen-lg mx-auto p-4">
+    <div className="max-w-screen-lg mx-auto p-4 animate-fadeIn">
       {loading ? (
         <div className="flex justify-center items-center h-vw">
           <Loader />
         </div>
       ) : movieDetails ? (
-        <div className="space-y-6">
-          <h1 className="text-3xl font-bold text-center text-gray-800">
-            About Movie
-          </h1>
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden p-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+        <div className="space-y-6 animate-fadeIn">
+          <h1 className="text-3xl font-bold text-center">About Movie</h1>
+          <div className=" shadow-lg rounded-lg overflow-hidden p-6 dark:bg-gray-800">
+            <h2 className="text-2xl font-semibold mb-4">
               {movieDetails.Title}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -166,15 +167,15 @@ const AboutMovie = () => {
               </div>
               <div className="space-y-4">
                 {Array.isArray(watchPlatforms) && watchPlatforms.length > 0 && (
-                  <div className="border border-gray-200 rounded-lg p-6 shadow-sm bg-white">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center tracking-wide">
+                  <div className="border border-gray-200 rounded-lg p-6 shadow-sm">
+                    <h3 className="text-xl font-semibold  mb-4 text-center tracking-wide">
                       Where to Watch
                     </h3>
                     <ul className="flex flex-wrap justify-center gap-3">
                       {watchPlatforms.map((platform, index) => (
                         <li
                           key={index}
-                          className="px-4 py-2 bg-gray-100 rounded-md text-gray-700 text-sm font-medium hover:bg-gray-200 transition"
+                          className="px-4 py-2  rounded-md text-sm font-medium hover:bg-gray-200 transition"
                         >
                           {platform}
                         </li>
@@ -204,7 +205,7 @@ const AboutMovie = () => {
                 Know more on Wikipedia
               </button>
               <button
-                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition cursor-pointer"
+                className="bg-red-500 px-4 py-2 rounded-md hover:bg-red-600 transition cursor-pointer"
                 onClick={() => getReviews(movieDetails.Title)}
               >
                 Read Reviews (Rotten Tomatoes)
@@ -216,9 +217,9 @@ const AboutMovie = () => {
               <SaveMovie />
             </div>
 
-            <p className="text-lg text-gray-700">{movieDetails.Plot}</p>
+            <p className="text-lg ">{movieDetails.Plot}</p>
             <Button
-              className="bg-blue-500 text-white hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 px-4 py-2 rounded-2xl hover:cursor-pointer mt-2"
+              className="bg-blue-500  hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 px-4 py-2 rounded-2xl hover:cursor-pointer mt-2"
               onClick={handleReadPlot}
             >
               <AiFillSound />
